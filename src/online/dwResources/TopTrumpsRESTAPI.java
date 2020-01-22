@@ -140,8 +140,14 @@ public class TopTrumpsRESTAPI {
 		String []test =new String[5];
 		String t1 = "name: player\npower: 100";
 		String t2 = "name: ai\npower: 12";
+		String t3 = "name: ai\npower: 14";
+		String t4 = "name: ai\npower: 15";
+		String t5 = "name: ai\npower: 16";
 		test[0]= t1;
 		test[1]= t2;
+		test[2]= t3;
+		test[3]= t4;
+		test[4]= t5;
 		return 	arrayTrans(test);
 	}
 	
