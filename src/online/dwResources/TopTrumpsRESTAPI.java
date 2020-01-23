@@ -17,7 +17,7 @@ import online.configuration.TopTrumpsJSONConfiguration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-
+import java.util.*;
 @Path("/toptrumps") // Resources specified here should be hosted at http://localhost:7777/toptrumps
 @Produces(MediaType.APPLICATION_JSON) // This resource returns JSON content
 @Consumes(MediaType.APPLICATION_JSON) // This resource can take JSON content as input
@@ -88,14 +88,14 @@ public class TopTrumpsRESTAPI {
 	}
 	
 	@GET
-	@Path("/fuck")
+	@Path("/viewSelectAtt")
 	/**
 	 * Here is an example of how to read parameters provided in an HTML Get request.
 	 * @param Word - A word
 	 * @return - A String
 	 * @throws IOException
 	 */
-	public void fuck(@QueryParam("Word") int i) throws IOException {
+	public void viewSelectAtt(@QueryParam("Word") int i) throws IOException {
 		get(i);
 	}
 	
@@ -105,15 +105,21 @@ public class TopTrumpsRESTAPI {
 	
 	
 	@GET
-	@Path("/roundStatus")
+	@Path("/updataViewGameStatus")
 	/**
 	 * Here is an example of how to read parameters provided in an HTML Get request.
 	 * @param Word - A word
 	 * @return - A String
 	 * @throws IOException
 	 */
-	public String roundStatus() throws IOException {
-		return "Round "+roundTest()+": ";
+	public String GameStatus() throws IOException {
+		String gameS = "Round "+roundTest()+": Please finish model and database!!!";
+		String selectS = "They select speed";
+		String[] s = new String[2];
+		s[0]=gameS;
+		s[1]=selectS;
+		
+		return arrayTrans(s);
 	}
 		
 	@GET
@@ -137,17 +143,19 @@ public class TopTrumpsRESTAPI {
 	@GET
 	@Path("/data")
 	public String dataG() {
+		Random r = new Random();
 		String []test =new String[5];
-		String t1 = "name: player\npower: 100";
-		String t2 = "name: ai\npower: 12";
-		String t3 = "name: ai\npower: 14";
-		String t4 = "name: ai\npower: 15";
-		String t5 = "name: ai\npower: 16";
+		String t1 = "name:human,"+r.nextInt(100)+",\npower:100,\nspeed:100,\nweight:100,\nheight:100,\ncute:100";
+		String t2 = "name:fat,"+r.nextInt(100)+",\npower:9,\nspeed:100,\nweight:100,\nheight:100,\ncute:0";
+		String t3 = "name:pig,"+r.nextInt(100)+",\npower:100,\nspeed:100,\nweight:100,\nheight:100,\ncute:0";
+		String t4 = "name:baby,"+r.nextInt(100)+",\npower:59,\nspeed:100,\nweight:50,\nheight:100,\ncute:20";
+		String t5 = "name:girl,"+r.nextInt(100)+",\npower:100,\nspeed:70,\nweight:100,\nheight:50,\ncute:100";
+		
 		test[0]= t1;
 		test[1]= t2;
 		test[2]= t3;
 		test[3]= t4;
-		test[4]= t5;
+		test[0]= t5;
 		return 	arrayTrans(test);
 	}
 	
@@ -157,7 +165,7 @@ public class TopTrumpsRESTAPI {
 	@GET
 	@Path("/pdata")
 	public String pdataG() {
-		String t1 = "name: player\npower: 100";
+		String t1 = "name: player,"+10+",\npower: 100,\nspeed: 100,\nweight: 100,\nheight: 100,\ncute: 100";
 		return 	t1;
 	}
 	
