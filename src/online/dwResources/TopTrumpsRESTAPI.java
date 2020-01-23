@@ -145,7 +145,7 @@ public class TopTrumpsRESTAPI {
 	public String dataG() {
 		Random r = new Random();
 		String []test =new String[5];
-		String t1 = "name:human,"+r.nextInt(100)+",\npower:100,\nspeed:100,\nweight:100,\nheight:100,\ncute:100";
+		String t1 = "name:human,"+r.nextInt(100)+",power:100,\nspeed:100,\nweight:100,\nheight:100,\ncute:100";
 		String t2 = "name:fat,"+r.nextInt(100)+",\npower:9,\nspeed:100,\nweight:100,\nheight:100,\ncute:0";
 		String t3 = "name:pig,"+r.nextInt(100)+",\npower:100,\nspeed:100,\nweight:100,\nheight:100,\ncute:0";
 		String t4 = "name:baby,"+r.nextInt(100)+",\npower:59,\nspeed:100,\nweight:50,\nheight:100,\ncute:20";
@@ -183,6 +183,26 @@ public class TopTrumpsRESTAPI {
 		}
 	}
 	
+	@GET
+	@Path("/updataViewGameOver")
+	public boolean updataViewGameOver() {
+		if(roundTest%2==0) {
+			System.out.print(roundTest);
+			return true;
+		}
+		return false;
+	}
+	
+	@GET
+	@Path("/updataViewPlayerResult")
+	public String updataViewPlayerResult() {
+		String[] a = {"The winner was you, you won 100 rounds ", "AI Player1 Lose overall, but won 0 rounds","AI Player2 Lose overall, but won 20 rounds"};
+		return arrayTrans(a);
+	}
+	
+	
+	
+	
 	
 	
 	public String arrayTrans(String[] in) {
@@ -194,6 +214,5 @@ public class TopTrumpsRESTAPI {
 		s+=in[in.length-1];
 		return s;
 	}
-	
 	
 }

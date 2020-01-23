@@ -25,18 +25,7 @@
     	<div class="container">
 
 			<!-- Add your HTML Here -->
-
-		
-
-			
-			
-
-			
-			
-			
-			
-						
-			
+						 		
 
 
 			<div class="pricing-header px-1 pt-3 md-1 pb-md-1 mx-auto text-center">
@@ -46,9 +35,6 @@
 			<div class="pricing-header px-1 pb-3 pt-md-1 md-1 mx-auto text-center">
 			<p id = gameStatus class="lead"></p>
 			</div>
-
-			
-
 
 			<div class="container">
 
@@ -65,16 +51,16 @@
 							</div>
 
 							<div id="showWinner">
-								<button class="btn btn-outline-dark" onclick="showRe()">Show winner</button>
+								<button class="btn btn-outline-dark btn-lg  mb-0" onclick="winnerStage()">Show winner</button>
 							</div>
 
 							<div id="nextRound">
-								<button class="btn btn-outline-dark" onclick="nextRo()">Next round</button>
+								<button class="btn btn-outline-dark btn-lg mt-3 mb-0" onclick="nextRo()">Next round</button>
 							</div>
 
 
 							<div id="select">
-								<button class="btn btn-outline-dark" onclick="activePlayer()">Select</button>
+								<button class="btn btn-outline-dark btn-lg mt-3 mb-0" onclick="activePlayer()">Select</button>
 							</div>
 
 							
@@ -86,6 +72,21 @@
 								<li class="list-group-item list-group-item-action list-group-item-light" onclick="selectAttr4()">Firepower</li>
 								<li class="list-group-item list-group-item-action list-group-item-light" onclick="selectAttr5()">Cargo</li>
 							</div>
+							
+							<div >
+								<ul id = "playerResult" class=" list-unstyled text-left mt-0 mb-4 px-3">
+									<h6 class= "result"></h6>
+									<h6 class= "result"></h6>
+									<h6 class= "result"></h6>
+									<h6 class= "result"></h6>
+									<h6 class= "result"></h6>
+								</ul>
+							</div>
+
+							<div id="returnToMenu">
+								<a href=http://localhost:7777/toptrumps><button class="btn btn-outline-dark btn-lg mb-0">Retrun to menu</button></a>
+							</div>
+
 
 						</div>
 					</div>
@@ -93,188 +94,169 @@
 				<div class="col-md-auto mb-3">
 					<div id="card1" class="card mb-4 shadow-sm" style="width: 10rem;">
 						<div class="card-header">
-							<h5 class="my-0 font-weight-normal">You</h5>
+							<div class="row">
+							<div class="col-auto mx-0 pr-0">
+								<h5 class="my-0 font-weight-normal">You</h5>
+							</div>
+							<div class="col-auto mx-0 pl-1">
+								<span id = numCards1 class="badge badge-warning"></span>
+							</div>
+							</div>
 						</div>
 						<div  class="card-body mt-1 pt-2">
-								<div class="row">
-									<div class="col-auto mx-0 pr-0">
-										<h5 id = "cardName1"></h5>
-									</div>
-									<div class="col-auto mx-0 pl-1">
-										<span id = numCards1 class="badge badge-warning"></span>
-									</div>
-								</div>
-							<ul id = "cardContent1" class=" list-unstyled mt-0 mb-4">
+								<h5 id = "cardName1"></h5>
+							<div id = "cardContent1" class=" list-unstyled mt-0 mb-4">
 								<h6 class= "attr"></h6>
 								<h6 class= "attr"></h6>
 								<h6 class= "attr"></h6>
 								<h6 class= "attr"></h6>
 								<h6 class= "attr"></h6>
-							</ul>
+							</div>
 						</div>
 					</div>
 				</div>
-				<div class="col-auto mb-3">
+				<div class="col-md-auto mb-3">
 					<div id="card2" class="card mb-4 shadow-sm" style="width: 10rem;">
 						<div class="card-header">
-							<h5 class="my-0 font-weight-normal">AI Player2</h5>
+							<div class="row">
+							<div class="col-auto mx-0 pr-0">
+								<h5 class="my-0 font-weight-normal">AI Player1</h5>
+							</div>
+							<div class="col-auto mx-0 pl-1">
+								<span id = numCards2 class="badge badge-warning"></span>
+							</div>
+							</div>
 						</div>
 						<div  class="card-body mt-1 pt-2">
-								<div class="row">
-									<div class="col-auto mx-0 pr-0">
-										<h5 id = "cardName2"></h5>
-									</div>
-									<div class="col-auto mx-0 pl-1">
-										<span id = numCards2 class="badge badge-warning"></span>
-									</div>
-								</div>
-							<ul id = "cardContent2" class=" list-unstyled mt-0 mb-4">
+								<h5 id = "cardName2"></h5>
+							<div id = "cardContent2" class=" list-unstyled mt-0 mb-4">
 								<h6 class= "attr"></h6>
 								<h6 class= "attr"></h6>
 								<h6 class= "attr"></h6>
 								<h6 class= "attr"></h6>
 								<h6 class= "attr"></h6>
-							</ul>
+							</div>
 						</div>
 					</div>
 				</div>
-				<div class="col-auto mb-3">
+				<div class="col-md-auto mb-3">
 					<div id="card3" class="card mb-4 shadow-sm" style="width: 10rem;">
 						<div class="card-header">
-							<h5 class="my-0 font-weight-normal">AI Player2</h5>
+							<div class="row">
+							<div class="col-auto mx-0 pr-0">
+								<h5 class="my-0 font-weight-normal">AI Player2</h5>
+							</div>
+							<div class="col-auto mx-0 pl-1">
+								<span id = numCards3 class="badge badge-warning"></span>
+							</div>
+							</div>
 						</div>
 						<div  class="card-body mt-1 pt-2">
-								<div class="row">
-									<div class="col-auto mx-0 pr-0">
-										<h5 id = "cardName3"></h5>
-									</div>
-									<div class="col-auto mx-0 pl-1">
-										<span id = numCards3 class="badge badge-warning"></span>
-									</div>
-								</div>
-							<ul id = "cardContent3" class=" list-unstyled mt-0 mb-4">
+								<h5 id = "cardName3"></h5>
+							<div id = "cardContent3" class=" list-unstyled mt-0 mb-4">
 								<h6 class= "attr"></h6>
 								<h6 class= "attr"></h6>
 								<h6 class= "attr"></h6>
 								<h6 class= "attr"></h6>
 								<h6 class= "attr"></h6>
-							</ul>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
 
 			<div class="container">
 				<div class="row justify-content-center">
-					<div class="col-auto mb-3">
+					<div class="col-md-auto mb-3">
 						<div id="card4" class="card mb-4 shadow-sm" style="width: 10rem;">
 							<div class="card-header">
-								<h5 class="my-0 font-weight-normal">AI Player3</h5>
+								<div class="row">
+								<div class="col-auto mx-0 pr-0">
+									<h5 class="my-0 font-weight-normal">AI Player3</h5>
+								</div>
+								<div class="col-auto mx-0 pl-1">
+									<span id = numCards4 class="badge badge-warning"></span>
+								</div>
+								</div>
 							</div>
 							<div  class="card-body mt-1 pt-2">
-									<div class="row">
-										<div class="col-auto mx-0 pr-0">
-											<h5 id = "cardName4"></h5>
-										</div>
-										<div class="col-auto mx-0 pl-1">
-											<span id = numCards4 class="badge badge-warning"></span>
-										</div>
-									</div>
-								<ul id = "cardContent4" class=" list-unstyled mt-0 mb-4">
+									<h5 id = "cardName4"></h5>
+								<div id = "cardContent4" class=" list-unstyled mt-0 mb-4">
 									<h6 class= "attr"></h6>
 									<h6 class= "attr"></h6>
 									<h6 class= "attr"></h6>
 									<h6 class= "attr"></h6>
 									<h6 class= "attr"></h6>
-								</ul>
+								</div>
 							</div>
 						</div>
 					</div>
-					<div class="col-auto mb-3">
+					<div class="col-md-auto mb-3">
 						<div id="card5" class="card mb-4 shadow-sm" style="width: 10rem;">
 							<div class="card-header">
-								<h5 class="my-0 font-weight-normal">AI Player4</h5>
+								<div class="row">
+								<div class="col-auto mx-0 pr-0">
+									<h5 class="my-0 font-weight-normal">AI Player4</h5>
+								</div>
+								<div class="col-auto mx-0 pl-1">
+									<span id = numCards5 class="badge badge-warning"></span>
+								</div>
+								</div>
 							</div>
 							<div  class="card-body mt-1 pt-2">
-									<div class="row">
-										<div class="col-auto mx-0 pr-0">
-											<h5 id = "cardName5"></h5>
-										</div>
-										<div class="col-auto mx-0 pl-1">
-											<span id = numCards5 class="badge badge-warning"></span>
-										</div>
-									</div>
-								<ul id = "cardContent5" class=" list-unstyled mt-0 mb-4">
+									<h5 id = "cardName5"></h5>
+								<div id = "cardContent5" class=" list-unstyled mt-0 mb-4">
 									<h6 class= "attr"></h6>
 									<h6 class= "attr"></h6>
 									<h6 class= "attr"></h6>
 									<h6 class= "attr"></h6>
 									<h6 class= "attr"></h6>
-								</ul>
+								</div>
 							</div>
 						</div>
 					</div>
-
-
-
-
 				</div>
 			</div>
-
-
-
 
 			<footer class="pt-4 my-md-5 pt-md-5 border-top">
 			
 			</footer>
 			</div>
-
-
-		
-		
 		</body>
-
-
-
 
 	<script type="text/javascript">
 			var numPlayer = 5;
 			// Method that is called on page load
 			function initalize() {
 				
-				draw();
-				// --------------------------------------------------------------------------
-				// You can call other methods you want to run when the page first loads here
-				// --------------------------------------------------------------------------
-				
-				// For example, lets call our sample methods
-				
+				drawStage();
+
 			}
 			
-			function draw() {
+			function drawStage() {
 			
 				// --------------------------------------------------------------------------
 				// You can call other methods you want to run when the page first loads here
 				// --------------------------------------------------------------------------
 				// For example, lets call our sample methods
-				updateGameStatus();
+				getGameStatus();
 				clear();
 				document.getElementById("select").style.display = 'block';
 				document.getElementById("card1").style.display = 'block';
-				updateHumanDeskCards();
-				updateRole();
+				getHumanDeskCards();
+				getRole();
 				
 			}
 			
+
+			function winnerStage(){
+				clear();
+				getGameOver();
+			}
 
 			function activePlayer(){
 				if(0==0){
 					humanActived();
 				}else
-				updateSelectStatus();
-			}
-
-			function updateSelectStatus(){
 				document.getElementById("selectStatus").style.display = 'block';
 			}
 
@@ -286,15 +268,21 @@
 			}
 
 
+
+			function activePlayerResult(){
+
+				document.getElementById("playerResult").style.display = 'block';
+			}
+
+			
+
 			function nextRo(){
-				draw();
+				drawStage();
 			}
 
 
 			function showRe(){
-				clear();
-				clearCard();
-				document.getElementById("nextRound").style.display = 'block';
+				
 			}
 
 
@@ -304,6 +292,8 @@
 				document.getElementById("select").style.display = 'none';
 				document.getElementById("selectList").style.display = 'none';
 				document.getElementById("selectStatus").style.display = 'none';
+				document.getElementById("returnToMenu").style.display = 'none';
+
 				clearCard();
 			}
 
@@ -338,19 +328,27 @@
 
 			function playerSelect(num){
 				sendPlayerSelect(num);
-				updateSelectStatus();
 				document.getElementById("selectList").style.display = 'none';
 				document.getElementById("showWinner").style.display  = 'block';
-				updateDeskCards();
+				getDeskCards();
 			}
 
-			function decodeCard(s,n){
+			function decodeString(s){
 
 				var strr = new Array();
 				strr = s.split(',');
+				return strr;
 
-				setUpCard(strr,n);
+			}
 
+			function setUpElements(s, targetID, targetCl){
+				console.log(s.length);
+					console.log(s);
+				for(j=0 ; j<s.length ; j++){
+					
+					console.log(document.getElementById(targetID).getElementsByClassName(targetCl)[j]);
+					document.getElementById(targetID).getElementsByClassName(targetCl)[j].innerHTML=s[j];
+				}
 			}
 
 			function setUpCard(s,n){
@@ -449,7 +447,7 @@
 
 
 		
-			function updateGameStatus() {
+			function getGameStatus() {
 				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/updataViewGameStatus"); // Request type and URL+parameters
 				if (!xhr) {
   					alert("CORS not supported");
@@ -464,11 +462,43 @@
 				}
 				xhr.send();
 			}
+			function getGameOver(){
+				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/updataViewGameOver"); // Request type and URL+parameters
+					if (!xhr) {
+						alert("CORS not supported");
+					}
+					xhr.onload = function(e) {
+						console.log(xhr.response);
+						if(xhr.response == "true"){
+							getPlayerResult();
+						}else{
+							document.getElementById("nextRound").style.display = 'block';
+						}
+					}
+				xhr.send();
 
-		
+			}
 
+
+			
+				
+			function getPlayerResult(){
+				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/updataViewPlayerResult"); // Request type and URL+parameters
+				if (!xhr) {
+  					alert("CORS not supported");
+				}
+				xhr.onload = function(e) {
+ 					let responseText = xhr.response; // the text of the response
+					var strr = new Array();
+					strr = javaArrayDecode(responseText);
+					setUpElements(strr,"playerResult", "result");
+				}
+				document.getElementById("playerResult").style.display = 'block';
+				document.getElementById("returnToMenu").style.display = 'block';	
+				xhr.send();
+			}
 			//123
-			function updateDeskCards() {
+			function getDeskCards() {
 						
 				// First create a CORS request, this is the message we are going to send (a get request in this case)
 				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/data"); // Request type and URL+parameters
@@ -491,7 +521,7 @@
 							document.getElementById(cardI).style.display = 'none';  
 					 	 }
 					  	else{
-							decodeCard(strr[i],i);
+							setUpCard(decodeString(strr[i]),i);
 							document.getElementById(cardI).style.display = 'block';
 						}
 					}
@@ -512,7 +542,7 @@
 
 			}
 
-			function updateRole() {
+			function getRole() {
 						
 				// First create a CORS request, this is the message we are going to send (a get request in this case)
 				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/gameRole"); // Request type and URL+parameters
@@ -537,7 +567,7 @@
 
 			}
 
-			function updateHumanDeskCards() {
+			function getHumanDeskCards() {
 						
 				// First create a CORS request, this is the message we are going to send (a get request in this case)
 				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/pdata"); // Request type and URL+parameters
@@ -550,7 +580,7 @@
 				xhr.onload = function(e) {
 					var responseText = xhr.response; // the text of the response
 		
-					decodeCard(responseText,0);
+					setUpCard(decodeString(responseText),0);
 
 
 				}
@@ -558,26 +588,5 @@
 				xhr.send();
 
 			}
-
-
-
 		</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </html>
