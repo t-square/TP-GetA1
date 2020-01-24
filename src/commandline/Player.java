@@ -41,6 +41,17 @@ public class Player {
 	public List<Card> getCardList(){
 		return cardList;
 	}
+	
+	
+	public int getNumOfCards(){
+		if(cardList.isEmpty()) {
+			return 0;
+		}else {
+			return cardList.size();
+		}
+	}
+	
+	
 	public boolean aliveJudge() {
 		if(cardList.isEmpty()) {
 			alive = false;

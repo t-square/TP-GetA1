@@ -40,11 +40,11 @@
 
 			<div class="row ">
 				<div class="col col-xl-3 mb-5 ml-5  pl-5 mr-3 pr-3">
-					<div class="card  text-center mb-4 " style="width: 12rem;">
+					<div class="card  mb-4 " style="width: 12rem;">
 						<div class="card-header ">
-							<h6 class="my-0 py-0 px-0 font-weight-normal" id="gameRole"></h6>
+							<h6 class="my-0 py-0 px-0 font-weight-normal text-left" id="gameRole"></h6>
 						</div>
-						<div  class="card-body">
+						<div  class="card-body text-center">
 
 							<div id="selectStatus" class=" mb-3">
 								<h4></h4>
@@ -59,10 +59,13 @@
 							</div>
 
 
-							<div id="select">
-								<button class="btn btn-outline-dark btn-lg mt-3 mb-0" onclick="activePlayer()">Select</button>
+							<div id="humanselectButton">
+								<button class="btn btn-outline-dark btn-lg mt-3 mb-0" onclick="humanActived()">Select</button>
 							</div>
 
+							<div id="AISelectButton">
+								<button class="btn btn-outline-dark btn-lg mt-3 mb-0" onclick="showAISelection()">Show AI's selection..</button>
+							</div>
 							
 
 							<div id = selectList class="list-group">
@@ -227,7 +230,7 @@
 			var numPlayer = 5;
 			// Method that is called on page load
 			function initalize() {
-				
+
 				drawStage();
 
 			}
@@ -238,27 +241,28 @@
 				// You can call other methods you want to run when the page first loads here
 				// --------------------------------------------------------------------------
 				// For example, lets call our sample methods
-				getGameStatus();
 				clear();
-				document.getElementById("select").style.display = 'block';
-				document.getElementById("card1").style.display = 'block';
-				getHumanDeskCards();
-				getRole();
-				
+				getGameInfoPackage();
+				requestDraw();
+				getGameInfoPackage();
+				selectStage();
+				getGameInfoPackage();
 			}
 			
+			function selectStage(){
+				clear();
+				getHumanCardOnDeck();
+				getGameInfoPackage();
+				HumanIsActivePlayer();
+				getGameInfoPackage();
+			}
+
 
 			function winnerStage(){
-				clear();
+				requestWinner();
 				getGameOver();
 			}
 
-			function activePlayer(){
-				if(0==0){
-					humanActived();
-				}else
-				document.getElementById("selectStatus").style.display = 'block';
-			}
 
 			function humanActived(){
 				clear();
@@ -268,6 +272,16 @@
 			}
 
 
+
+
+
+
+			function showAISelection(){
+				requestAISelect();
+				document.getElementById("AISelectButton").style.display  = 'none';
+				document.getElementById("showWinner").style.display  = 'block';
+				getCardOnDeck();
+			}
 
 			function activePlayerResult(){
 
@@ -289,7 +303,8 @@
 			function clear(){
 				document.getElementById("showWinner").style.display = 'none';
 				document.getElementById("nextRound").style.display = 'none';
-				document.getElementById("select").style.display = 'none';
+				document.getElementById("humanselectButton").style.display = 'none';
+				document.getElementById("AISelectButton").style.display = 'none';
 				document.getElementById("selectList").style.display = 'none';
 				document.getElementById("selectStatus").style.display = 'none';
 				document.getElementById("returnToMenu").style.display = 'none';
@@ -307,30 +322,28 @@
 
 
 			function selectAttr1(){
-				playerSelect("1");
+				sendPlayerSelect("1");
 			}
 			
 			function selectAttr2(){
-				playerSelect("2");
+				sendPlayerSelect("2");
 			}
 
 			function selectAttr3(){
-				playerSelect("3");
+				sendPlayerSelect("3");
 			}
 
 			function selectAttr4(){
-				playerSelect("4");
+				sendPlayerSelect("4");
 			}
 
 			function selectAttr5(){
-				playerSelect("5");
+				sendPlayerSelect("5");
 			}
 
 			function playerSelect(num){
 				sendPlayerSelect(num);
-				document.getElementById("selectList").style.display = 'none';
-				document.getElementById("showWinner").style.display  = 'block';
-				getDeskCards();
+				
 			}
 
 			function decodeString(s){
@@ -342,11 +355,7 @@
 			}
 
 			function setUpElements(s, targetID, targetCl){
-				console.log(s.length);
-					console.log(s);
 				for(j=0 ; j<s.length ; j++){
-					
-					console.log(document.getElementById(targetID).getElementsByClassName(targetCl)[j]);
 					document.getElementById(targetID).getElementsByClassName(targetCl)[j].innerHTML=s[j];
 				}
 			}
@@ -358,12 +367,11 @@
 				var cardNameI= "cardName"+(n+1);
 				var numCardI= "numCards"+(n+1);
 				var cardCI= "cardContent"+(n+1);
-				name =s[0].split('name:');
+				name =s[0].split('Name:');
 				num	= s[1];
 				document.getElementById(cardNameI).innerHTML = name[1];
 				document.getElementById(numCardI).innerHTML = num;
-
-				for(j=2 ; j<s.length ; j++){
+				for(j=2 ; j<s.length; j++){
 					document.getElementById(cardCI).getElementsByClassName("attr")[j-2].innerHTML=s[j];
 				}
 			}
@@ -432,7 +440,7 @@
 
 			function sendPlayerSelect(num) {
 				// First create a CORS request, this is the message we are going to send (a get request in this case)
-				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/viewSelectAtt?Word="+num); // Request type and URL+parameters
+				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/askViewHumanSelect?Word="+num); // Request type and URL+parameters
 				// Message is not sent yet, but we can check that the browser supports CORS
 				if (!xhr) {
   					alert("CORS not supported");
@@ -440,39 +448,27 @@
 				// CORS requests are Asynchronous, i.e. we do not wait for a response, instead we define an action
 				// to do when the response arrives 
 				xhr.onload = function(e) {	
+					document.getElementById("selectList").style.display = 'none';
 				}
 				// We have done everything we need to prepare the CORS request, so send it
 				xhr.send();		
+				getCardOnDeck();
+				getGameInfoPackage();
+				document.getElementById("showWinner").style.display  = 'block';
 			}
 
 
 		
-			function getGameStatus() {
-				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/updataViewGameStatus"); // Request type and URL+parameters
-				if (!xhr) {
-  					alert("CORS not supported");
-				}
-				xhr.onload = function(e) {
- 					var responseText = xhr.response; // the text of the response
-					var strr = new Array();
-					strr = javaArrayDecode(responseText);
-					console.log(strr);
-					document.getElementById("gameStatus").innerHTML = strr[0];
-					document.getElementById("selectStatus").innerHTML = strr[1];
-				}
-				xhr.send();
-			}
 			function getGameOver(){
-				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/updataViewGameOver"); // Request type and URL+parameters
+				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/updateViewGameIsOver"); // Request type and URL+parameters
 					if (!xhr) {
 						alert("CORS not supported");
 					}
 					xhr.onload = function(e) {
-						console.log(xhr.response);
-						if(xhr.response == "true"){
+						if(xhr.response == 0){
 							getPlayerResult();
 						}else{
-							document.getElementById("nextRound").style.display = 'block';
+
 						}
 					}
 				xhr.send();
@@ -535,12 +531,72 @@
 			}
 
 
-			function setContent(id, c) {
+			function requestDraw() {
 
-				
+				// First create a CORS request, this is the message we are going to send (a get request in this case)
+				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/requestGameDraw"); 
+				if (!xhr) {
+					alert("CORS not supported");
+				}
+			
+				// We have done everything we need to prepare the CORS request, so send it
+				xhr.send();	
+			}
+			
+			function requestWinner() {
+				// First create a CORS request, this is the message we are going to send (a get request in this case)
+				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/requsetViewShowWinner"); 
+				if (!xhr) {
+					alert("CORS not supported");
+				}
+				xhr.onload = function(e) {
+					var responseText = xhr.response;
+					var cardI = "card"+(parseInt(responseText)+1);
+					document.getElementById("card1").style.display = 'block';
+					getGameInfoPackage();
+				}
+				// We have done everything we need to prepare the CORS request, so send it
+				xhr.send();	
+			}
 
+			function requestAISelect(){
+				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/requestAISelect"); // Request type and URL+parameters
+					if (!xhr) {
+						alert("CORS not supported");
+					}
+					xhr.onload = function(e) {
+						getGameInfoPackage();
+					}
+				xhr.send();
 
 			}
+
+
+
+
+
+
+
+
+			function getGameInfoPackage(){
+				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/updateViewGameInformPackage"); 
+					if (!xhr) {
+						alert("CORS not supported");
+					}
+					xhr.onload = function(e) {
+						var responseText = xhr.response; // the text of the response
+						var strr = new Array();
+						strr=javaArrayDecode(responseText);
+						document.getElementById("gameStatus").innerHTML = strr[0];
+						document.getElementById("gameRole").innerHTML = strr[1];
+					}
+					// We have done everything we need to prepare the CORS request, so send it
+					xhr.send();	
+			}
+
+
+
+
 
 			function getRole() {
 						
@@ -563,14 +619,14 @@
 					
 				
 				xhr.send();	
-
+	
 
 			}
 
-			function getHumanDeskCards() {
+			function getHumanCardOnDeck() {
 						
 				// First create a CORS request, this is the message we are going to send (a get request in this case)
-				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/pdata"); // Request type and URL+parameters
+				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/updateViewHumanCardOnDeck"); // Request type and URL+parameters
 				// Message is not sent yet, but we can check that the browser supports CORS
 				if (!xhr) {
 					alert("CORS not supported");
@@ -579,14 +635,75 @@
 				// to do when the response arrives 
 				xhr.onload = function(e) {
 					var responseText = xhr.response; // the text of the response
-		
-					setUpCard(decodeString(responseText),0);
-
-
+					console.log(responseText);
+					if(responseText=='null'){
+							document.getElementById("card1").style.display = 'none';  
+					}
+					else{
+						setUpCard(decodeString(responseText),0);
+						document.getElementById("card1").style.display = 'block';
+					}
 				}
 				// We have done everything we need to prepare the CORS request, so send it
 				xhr.send();
-
 			}
+
+
+
+			function getCardOnDeck() {
+				// First create a CORS request, this is the message we are going to send (a get request in this case)
+				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/updateViewCardSOnDeck"); // Request type and URL+parameters
+				// Message is not sent yet, but we can check that the browser supports CORS
+				if (!xhr) {
+					alert("CORS not supported");
+				}
+				// CORS requests are Asynchronous, i.e. we do not wait for a response, instead we define an action
+				// to do when the response arrives 
+				xhr.onload = function(e) {
+					let responseText = xhr.response; // the text of the response
+					  var strr = new Array();
+					  strr = javaArrayDecode(responseText);
+					console.log(strr);
+					  for(i = 0 ; i<strr.length; i++){
+						  cardI = "card"+(1+i);
+						  cardCI = "cardContent"+(1+i);
+					  	if(strr[i]=='null'){
+							document.getElementById(cardI).style.display = 'none';  
+					 	 }
+					  	else{
+							setUpCard(decodeString(strr[i]),i);
+							document.getElementById(cardI).style.display = 'block';
+						}
+					}
+				}
+				xhr.send();
+			}
+
+			function HumanIsActivePlayer() {
+				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/updateHumanIsActivePlayer"); // Request type and URL+parameters
+				// Message is not sent yet, but we can check that the browser supports CORS
+				if (!xhr) {
+					alert("CORS not supported");
+				}
+				// CORS requests are Asynchronous, i.e. we do not wait for a response, instead we define an action
+				// to do when the response arrives 
+				xhr.onload = function(e) {
+					var responseText = xhr.response; // the text of the response
+					if(responseText==0){
+						document.getElementById("humanselectButton").style.display = 'block';
+						getGameInfoPackage();
+					}else{
+						document.getElementById("humanselectButton").style.display = 'none';
+						document.getElementById("AISelectButton").style.display = 'block';
+						getGameInfoPackage();
+					}
+				}
+				// We have done everything we need to prepare the CORS request, so send it
+				xhr.send();
+			}
+
+
+
+
 		</script>
 </html>

@@ -20,7 +20,7 @@
 
 	</head>
 
-    <body onload="initalize()"> <!-- Call the initalize method when the page loads -->
+    <body onload="requestGameInitialised()"> <!-- Call the initalize method when the page loads -->
     	
 			<div class="pricing-header px-1 pt-3 md-1 pb-3 mx-auto text-center">
 				<h1 class="display-5">Top Trumps Game</h1>
@@ -56,4 +56,49 @@
 			</div>
 			<footer class="pt-4 my-md-5 pt-md-5 border-top"></footer>	
 	</body>
+
+
+
+
+<script type="text/javascript">
+
+
+function createCORSRequest(method, url) {
+  				var xhr = new XMLHttpRequest();
+  				if ("withCredentials" in xhr) {
+
+    				// Check if the XMLHttpRequest object has a "withCredentials" property.
+    				// "withCredentials" only exists on XMLHTTPRequest2 objects.
+    				xhr.open(method, url, true);
+
+  				} else if (typeof XDomainRequest != "undefined") {
+
+    				// Otherwise, check if XDomainRequest.
+    				// XDomainRequest only exists in IE, and is IE's way of making CORS requests.
+    				xhr = new XDomainRequest();
+    				xhr.open(method, url);
+
+ 				 } else {
+
+    				// Otherwise, CORS is not supported by the browser.
+    				xhr = null;
+
+  				 }
+  				 return xhr;
+			}
+
+	function requestGameInitialised() {
+				// First create a CORS request, this is the message we are going to send (a get request in this case)
+				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/requestGameInitialised"); 
+				if (!xhr) {
+					alert("CORS not supported");
+				}
+				xhr.onload = function(e) {
+				}
+				// We have done everything we need to prepare the CORS request, so send it
+				xhr.send();	
+			}
+</script>
+
+
 </html>

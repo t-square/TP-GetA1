@@ -17,6 +17,9 @@ import online.configuration.TopTrumpsJSONConfiguration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+
+import commandline.GameModel;
+
 import java.util.*;
 @Path("/toptrumps") // Resources specified here should be hosted at http://localhost:7777/toptrumps
 @Produces(MediaType.APPLICATION_JSON) // This resource returns JSON content
@@ -43,10 +46,11 @@ public class TopTrumpsRESTAPI {
 	 * the deck file and the number of AI players.
 	 * @param conf
 	 */
-	
+	GameModel model ;
+
 	
 	public TopTrumpsRESTAPI(TopTrumpsJSONConfiguration conf) {
-		
+		model = new GameModel(5);
 		
 	}
 	
@@ -174,7 +178,7 @@ public class TopTrumpsRESTAPI {
 	@Path("/gameRole")
 	
 	public String gameRole() {
-		System.out.println(roundTest);
+
 		System.out.println(roundTest%2);
 		if(roundTest%2==0) {
 			return gameRoleTest[0];
@@ -186,8 +190,8 @@ public class TopTrumpsRESTAPI {
 	@GET
 	@Path("/updataViewGameOver")
 	public boolean updataViewGameOver() {
-		if(roundTest%2==0) {
-			System.out.print(roundTest);
+		if(model.getGameIsOver()%2==0) {
+
 			return true;
 		}
 		return false;
@@ -200,6 +204,94 @@ public class TopTrumpsRESTAPI {
 		return arrayTrans(a);
 	}
 	
+	@GET
+	@Path("/updateViewActivePlayers")
+	public void updateViewActivePlayers() {
+		model.decideActivePlayers();
+	}
+	
+	@GET
+	@Path("/updateViewGameInfo")
+	public String updateViewGameInfo() {
+		return model.getGameInfo();
+	}
+	
+	@GET
+	@Path("/updateViewGameInformPackage")
+	public String updateViewGameInformPackage() {
+		String [] s = new String[2];
+		s[0]= model.getGameStatus();
+		s[1]= model.getGameInfo();
+		return arrayTrans(s);
+	}
+	
+	
+	
+	@GET
+	@Path("/requestGameInitialised")
+	public void requestGameInitialised() {
+		model.initialiseGame(5);
+	}
+	
+	@GET
+	@Path("/requestGameDraw")
+	public String requestGameDraw() {
+		model.decideActivePlayers();
+		model.draw();
+		return updateViewGameInformPackage();
+	}
+	
+	@GET
+	@Path("/requestAISelect")
+	public void requestAISelect() {
+		model.AISelect();
+	}
+	
+	
+	
+	@GET
+	@Path("/updateHumanIsActivePlayer")
+	public int updateViewHumanIsActivePlayer() {
+		return model.humanIsActivePlayer();
+	}
+	
+	@GET
+	@Path("/askViewHumanSelect")
+	public void askViewHumanSelect(@QueryParam("Word") int num) {
+		 model.humanSelect(num);
+	}
+	
+	@GET
+	@Path("/requsetViewShowWinner")
+	public int requsetViewShowWinner() {
+		model.showWinner();
+		model.gameIsOver();
+		return model.getRoundWinnerIndex();
+	}
+	
+	@GET
+	@Path("/updateViewGameIsOver")
+	public int updateViewGameIsOver() {
+		return model.getGameIsOver();
+	}
+	
+	
+	
+	
+	@GET
+	@Path("/updateViewCardSOnDeck")
+	public String updateViewCardOnDeck() {
+		return arrayTrans(model.getCardStringOnDeck());
+		
+	}
+	
+	
+	@GET
+	@Path("/updateViewHumanCardOnDeck")
+	public String updateViewHumanCardOnDeck() {
+		System.out.print(model.getCardStringOnDeck()[0]);
+		return model.getCardStringOnDeck()[0];
+	}
 	
 	
 	
