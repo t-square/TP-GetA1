@@ -32,42 +32,47 @@ public class GameModel {
 	private String gameInfo;
 	private int roundSelectIndex;
 	private int gameIsOver = -1;
+	private int finalWinnerIndex =-1;
+	private int humanLose = -1;
+	
+	
+	public static void main(String[] args) {
+		GameModel model = new GameModel(5);
+		while(model.getGameIsOver()!=0) {
+			model.decideActivePlayers();
+			model.draw();
+			System.out.println(model.getGameInfo());
+			System.out.println(model.getGameStatus());
+			System.out.println(model.activePlayer.getPlayerName());
+			if(model.humanIsActivePlayer()==0) {
+				model.humanSelect(5);
+			}else {
+				model.AISelect();
+			}
+		
+			
+			for(int i=0;i<model.getCardStringOnDeck().length;i++) {
+				if(model.getCardStringOnDeck()[i]!=null) {
+					System.out.println(model.getCardStringOnDeck()[i]);
+				}else {
+					System.out.println("null");
+				}
+			}
+			
+			System.out.println(model.getGameStatus());
+			System.out.println(model.getGameInfo());
+			model.showWinner();
 
-	
-	
-//	public static void main(String[] args) {
-//		GameModel model = new GameModel(5);
-//		while(model.getGameIsOver()!=0) {
-//			model.decideActivePlayers();
-//			model.draw();
-//			System.out.printlnln(model.getGameInfo());
-//			System.out.printlnln(model.getGameStatus());
-//			System.out.printlnln(model.activePlayer.getPlayerName());
-//			if(model.humanIsActivePlayer()==0) {
-//				model.humanSelect(5);
-//			}else {
-//				model.AISelect();
-//			}
-//		
-//			
-//			for(int i=0;i<model.getCardStringOnDeck().length;i++) {
-//				if(model.getCardStringOnDeck()[i]!=null) {
-//					System.out.printlnln(model.getCardStringOnDeck()[i]);
-//				}else {
-//					System.out.printlnln("null");
-//				}
-//			}
-//			
-//			System.out.printlnln(model.getGameStatus());
-//			System.out.printlnln(model.getGameInfo());
-//			model.showWinner();
-//
-//			model.gameIsOver();
-//			System.out.printlnln(model.getGameStatus());
-//
-//		}
-//	}
-	
+			model.gameIsOver();
+			System.out.println(model.getGameStatus());
+
+		}
+		
+		for(int i=0;i<model.getGameResult().length;i++) {
+			System.out.println(model.getGameResult()[i]);
+		}
+		
+	}
 
 	public void initialiseGame(int num) {
 		System.out.println("initialiseGame");
@@ -90,23 +95,20 @@ public class GameModel {
 		cardOnDeck= new Card[num];
 		defaultPlayer();
 		defaultCard();
-		defaultSelectPlayer();
 		decideActivePlayers();
+		humanLose = -1;
 	}
-	
-	
 	
 	
 	public GameModel(int num){
 		initialiseGame(num);
 	}
 
-	
 
 	public void defaultPlayer() {
 		for(int i=0;i<numOfPlayer;i++) {
 			if (i == 0) {
-				Player player = new Player("YOU");
+				Player player = new Player("Player");
 				playerList.add(player);
 			}
 			else {
@@ -158,9 +160,6 @@ public class GameModel {
 		}
 	}
 	
-	public void defaultSelectPlayer() {
-		
-	}
 	
 	public void draw() {
 		Random r =new Random();
@@ -178,20 +177,8 @@ public class GameModel {
 			gameInfo = "The active player is "+activePlayer.getPlayerName()+ ".";
 			status = roundString() +"Players have drawn their cards.";
 			
-			for(int i=0 ; i< 5 ; i++) {
-				for(int j=0 ; j< 5 ;j++) {
-					if(cardOnDeck[i]!=null) {
-				System.out.print(cardOnDeck[i].getDescriptions().get(j)+", ");
-					}else 
-						System.out.println("null");
-				}
-			}
 	}
 	
-	
-	
-	
-	//wei part
 	
 	public String roundString() {
 		return "Round "+round+": ";
@@ -253,17 +240,6 @@ public class GameModel {
 	}
 
 
-//	public void selectDescription() {
-//			int maxValue = activePlayer.getCardList().get(0).getedscriptions().get(0);
-//			desSelect = 0;
-//			for(int i=1;i<description.length;i++) {
-//				if(activePlayer.getCardList().get(0).getedscriptions().get(i)> maxValue) {
-//					desSelect =i;
-//				}
-//			}
-//		}
-//		
-//	}
 	
 	
 	public void showWinner() {
@@ -280,6 +256,7 @@ public class GameModel {
 					roundWinnerIndex = i;
 					drew = false;
 				}else if(currentValue == maxValue) {
+					roundWinnerIndex = i;
 					drew = true;
 				}
 			}
@@ -299,10 +276,10 @@ public class GameModel {
 			roundWinner=activePlayer;
 		}
 		else {// has winner
+			playerList.get(roundWinnerIndex).addWin();
 			if(roundWinnerIndex==0) {
 				status = roundString()+"Congratulation, you won this round!!!";
 				roundWinner = playerList.get(roundWinnerIndex);
-				
 			}else {
 				status = roundString()+"Hhhhhhh, "+ playerList.get(roundWinnerIndex).getPlayerName() +" won this round.";
 				roundWinner = playerList.get(roundWinnerIndex);
@@ -326,7 +303,7 @@ public class GameModel {
 	}
 		
 
-	public boolean gameIsOver() {
+	public void gameIsOver() {
 		int aliveNum = 0;
 		int winnerIndex = -1;
 		for(int i = 0 ; i<numOfPlayer;i++) {
@@ -335,30 +312,101 @@ public class GameModel {
 				winnerIndex=i;
 			}
 		}
+		System.out.println(aliveNum);
 		if(aliveNum == 1) {
-			if(winnerIndex==0) {
+			if(winnerIndex == 0) {
 				status = roundString()+"Congratulation, you won this game!!!";
+				finalWinnerIndex=0;
 			}else{
 				status = roundString()+"Hhhhhhh, "+ playerList.get(winnerIndex).getPlayerName() +" won the game.";
+				finalWinnerIndex=winnerIndex;
 			}
 			gameInfo = "Sorry, the game is over.";
 			gameIsOver = 0;
-			return true;
 		}
 		else if(aliveNum == 0 || !roundWinner.aliveJudge()){
 			status = roundString()+"Hhhhhhh, someone won but now has no card bye!!!";	
 			gameIsOver = 0;
-			return true;
 		}
-		else {
-			System.out.println("gameisover");
-			System.out.println(status);
-			return false;
+		if(humanLose()&&humanLose != 0){
+			humanLose = 0;
+			System.out.println("humanFuck");
+			autoPlay();
 		}
-		
-
+		System.out.println("gameisover");
 	}
 	
+//	
+//	public void AIgameIsOver() {
+//		int aliveNum = 0;
+//		int winnerIndex = -1;
+//		for(int i = 0 ; i<numOfPlayer;i++) {
+//			if(playerList.get(i).aliveJudge()) {
+//				aliveNum++;
+//				winnerIndex=i;
+//			}
+//		}
+//		System.out.println("alivenum"+aliveNum);
+//		if(aliveNum == 1) {
+//			if(winnerIndex == 0) {
+//				status = roundString()+"Congratulation, you won this game!!!";
+//				finalWinnerIndex=0;
+//			}else{
+//				status = roundString()+"Hhhhhhh, "+ playerList.get(winnerIndex).getPlayerName() +" won the game.";
+//				finalWinnerIndex=winnerIndex;
+//			}
+//			gameInfo = "Sorry, the game is over.";
+//			gameIsOver = 0;
+//		}
+//		else if(aliveNum == 0 || !roundWinner.aliveJudge()){
+//			status = roundString()+"Hhhhhhh, someone won but now has no card bye!!!";	
+//			gameIsOver = 0;
+//		}
+//	}
+	
+	
+	public int getHumanLose() {
+		return humanLose;
+	}
+
+	
+	public boolean humanLose() {
+		System.out.println(playerList.get(0).aliveJudge()+"isdead");
+		System.out.println(playerList.get(0).getCardList().isEmpty()+"isempty");
+		if(!playerList.get(0).aliveJudge()){
+			status = roundString()+"Hhhhhhh, you are loser!!!";	
+			return true;
+		}
+		return false;
+	}
+	
+	public void autoPlay() {
+		System.out.println("hi");
+		while(this.getGameIsOver()!=0) {
+			this.decideActivePlayers();
+			this.draw();
+			System.out.println(this.getGameInfo());
+			System.out.println(this.getGameStatus());
+			if(this.humanIsActivePlayer()==0) {
+				this.humanSelect(5);
+			}else {
+				this.AISelect();
+			}
+			for(int i=0;i<this.getCardStringOnDeck().length;i++) {
+				if(this.getCardStringOnDeck()[i]!=null) {
+					System.out.println(this.getCardStringOnDeck()[i]);
+				}else {
+					System.out.println("null");
+				}
+			}
+		
+			System.out.println(this.getGameStatus());
+			System.out.println(this.getGameInfo());
+			this.showWinner();
+			this.gameIsOver();
+			System.out.println(this.getGameStatus());
+		}
+	}
 	
 	public int getGameIsOver() {
 		return gameIsOver;
@@ -401,7 +449,7 @@ public class GameModel {
 				
 				temString += playerList.get(i).getPlayerName()+"  ";
 				temString += "Name:"+cardOnDeck[i].getCardName()+",";
-				temString += "Hold:"+playerList.get(i).getNumOfCards()+",";
+				temString += "x"+(playerList.get(i).getNumOfCards()+1)+","; //plus the card on deck;
 				for(int j=0 ; j< cardOnDeck.length ;j++) {
 					if(j==cardOnDeck.length-1) {
 						temString += cardAttribute[j+1]+": "+cardOnDeck[i].getDescriptions().get(cardOnDeck.length-1);
@@ -410,8 +458,6 @@ public class GameModel {
 						temString += cardAttribute[j+1]+": "+cardOnDeck[i].getDescriptions().get(j)+",";
 					}
 				}
-				
-				
 				s[i] = temString;
 				temString = "";
 			}else {
@@ -421,7 +467,34 @@ public class GameModel {
 		return s;
 	}
 		
-		
+	public String[] getGameResult(){
+		ArrayList <String> s = new ArrayList <String>();	
+		if(finalWinnerIndex==-1) {
+			s.add("Hhhhh , no one won!!!");
+		}
+		else if(finalWinnerIndex==0) {
+			s.add("Congratulaton, the winner is you!!!");
+			s.add("you won " + playerList.get(0).getWinTimes()+" rounds.");
+		}
+		else {
+			s.add("Hhhhh look at you, the winner is:");
+			s.add(playerList.get(finalWinnerIndex).getPlayerName()+" won " + playerList.get(finalWinnerIndex).getWinTimes()+" rounds.");
+		}
+		s.add("The poor losers: ");
+		for(int i=0 ; i< playerList.size() ; i++) {
+			if(finalWinnerIndex==i) {
+				if(finalWinnerIndex==0) {
+				}
+				else {
+					s.add(playerList.get(finalWinnerIndex).getPlayerName()+" won " + playerList.get(finalWinnerIndex).getWinTimes()+" rounds.");
+				}
+			}else {
+				s.add(playerList.get(i).getPlayerName()+" won " + playerList.get(i).getWinTimes()+ " rounds.");
+			}
+		}
+		String[] strr = s.toArray(new String[s.size()]); 
+		return strr;
+	}	
 		
 	
 	public int getRound() {

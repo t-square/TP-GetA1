@@ -20,13 +20,36 @@
 
 	</head>
 
-    <body onload="initalize()"> <!-- Call the initalize method when the page loads -->
+    <body onload=initalize()> <!-- Call the initalize method when the page loads -->
     	
     	<div class="container">
 
 			<!-- Add your HTML Here -->
 						 		
 
+
+			
+			<div class="container mt-6 mb-6" id="startPanel">	
+				<div class="pricing-header px-1 pt-5 md-1 pb-4 mx-auto text-center">
+					<h1 class="display-2"></h1>
+				</div>
+				<div class="pricing-header px-1 pt-5 md-1 pb-2 mx-auto text-center">
+					<h1 class="display-2">Are you ready?</h1>
+				</div>
+
+				<div class="pricing-header px-1 pb-3 pt-md-1 md-1 mx-auto text-center">
+					<p class="lead">Hello dear player</p>
+				</div>
+				
+			
+				<div class="row mt-3 justify-content-center" >
+					<div class="col-3 mt-3  pt-3 py-0">
+						<button class="btn btn-outline-dark btn-block btn-lg mt-3 mb-0" onclick="startGame()">Start</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="container"  id="gamePanel">
 
 			<div class="pricing-header px-1 pt-3 md-1 pb-md-1 mx-auto text-center">
 			<h1 class="display-5">Top Trumps Game</h1>
@@ -36,7 +59,6 @@
 			<p id = gameStatus class="lead"></p>
 			</div>
 
-			<div class="container">
 
 			<div class="row ">
 				<div class="col col-xl-3 mb-5 ml-5  pl-5 mr-3 pr-3">
@@ -49,13 +71,12 @@
 							<div id="selectStatus" class=" mb-3">
 								<h4></h4>
 							</div>
-
 							<div id="showWinner">
 								<button class="btn btn-outline-dark btn-lg  mb-0" onclick="winnerStage()">Show winner</button>
 							</div>
 
 							<div id="nextRound">
-								<button class="btn btn-outline-dark btn-lg mt-3 mb-0" onclick="nextRo()">Next round</button>
+								<button class="btn btn-outline-dark btn-lg mt-3 mb-0" onclick="nextRound()">Next round</button>
 							</div>
 
 
@@ -83,6 +104,10 @@
 									<h6 class= "result"></h6>
 									<h6 class= "result"></h6>
 									<h6 class= "result"></h6>
+									<h6 class= "result"></h6>
+									<h6 class= "result"></h6>
+									<h6 class= "result"></h6>
+									<h6 class= "result"></h6>
 								</ul>
 							</div>
 
@@ -90,7 +115,16 @@
 								<a href=http://localhost:7777/toptrumps><button class="btn btn-outline-dark btn-lg mb-0">Retrun to menu</button></a>
 							</div>
 
-
+							
+					</div>	
+					</div>	
+					<div class="row mt-3">
+						<div class="col-md-auto mb-3">
+							<a href="http://localhost:7777/toptrumps/">
+								<h5>
+									<span class="badge badge-warning">Let me leave</span>
+								</h5>
+							</a>
 						</div>
 					</div>
 				</div>
@@ -230,9 +264,15 @@
 			var numPlayer = 5;
 			// Method that is called on page load
 			function initalize() {
+				requestGameInitialised();
+				document.getElementById("gamePanel").style.display = 'none';
+				clear();
+				document.getElementById("startPanel").style.display = 'block';
+			}
 
-				drawStage();
-
+			function startGame() {
+				document.getElementById("gamePanel").style.display = 'block';
+				requestDraw();
 			}
 			
 			function drawStage() {
@@ -241,26 +281,20 @@
 				// You can call other methods you want to run when the page first loads here
 				// --------------------------------------------------------------------------
 				// For example, lets call our sample methods
-				clear();
-				getGameInfoPackage();
+
 				requestDraw();
-				getGameInfoPackage();
-				selectStage();
-				getGameInfoPackage();
 			}
 			
-			function selectStage(){
-				clear();
-				getHumanCardOnDeck();
+			function selectStage(){			
 				getGameInfoPackage();
 				HumanIsActivePlayer();
-				getGameInfoPackage();
+				getHumanCardOnDeck();
+
 			}
 
 
 			function winnerStage(){
 				requestWinner();
-				getGameOver();
 			}
 
 
@@ -283,24 +317,15 @@
 				getCardOnDeck();
 			}
 
-			function activePlayerResult(){
+		
 
-				document.getElementById("playerResult").style.display = 'block';
-			}
-
-			
-
-			function nextRo(){
-				drawStage();
-			}
-
-
-			function showRe(){
-				
+			function nextRound(){
+				requestDraw();
 			}
 
 
 			function clear(){
+				document.getElementById("startPanel").style.display = 'none';
 				document.getElementById("showWinner").style.display = 'none';
 				document.getElementById("nextRound").style.display = 'none';
 				document.getElementById("humanselectButton").style.display = 'none';
@@ -315,7 +340,9 @@
 			function clearCard(){
 				for(i = 0 ; i<numPlayer; i++){
 					cardI = "card"+(1+i);
-					  document.getElementById(cardI).style.display = 'none';  
+					  document.getElementById(cardI).style.display = 'none';
+					  document.getElementById(cardI).style.borderColor = "";
+					document.getElementById(cardI).style.borderWidth = "";  
 				}
 			}
 
@@ -465,10 +492,15 @@
 						alert("CORS not supported");
 					}
 					xhr.onload = function(e) {
-						if(xhr.response == 0){
+						if(xhr.response == 0 || xhr.response == 1){
+							console.log(xhr.response+ "!!!!!");
+							document.getElementById("showWinner").style.display  = 'none';
+							document.getElementById("nextRound").style.display  = 'none';
 							getPlayerResult();
 						}else{
-
+							console.log(xhr.response+ "gameisnoover");
+							document.getElementById("showWinner").style.display  = 'none';
+							document.getElementById("nextRound").style.display  = 'block';
 						}
 					}
 				xhr.send();
@@ -488,9 +520,11 @@
 					var strr = new Array();
 					strr = javaArrayDecode(responseText);
 					setUpElements(strr,"playerResult", "result");
+					document.getElementById("playerResult").style.display = 'block';
+					document.getElementById("showWinner").style.display = 'none';	
+					document.getElementById("returnToMenu").style.display = 'none';	
 				}
-				document.getElementById("playerResult").style.display = 'block';
-				document.getElementById("returnToMenu").style.display = 'block';	
+				
 				xhr.send();
 			}
 			//123
@@ -538,7 +572,12 @@
 				if (!xhr) {
 					alert("CORS not supported");
 				}
-			
+				clear();
+				xhr.onload = function(e) {
+					getGameInfoPackage();
+					selectStage();
+				}
+				
 				// We have done everything we need to prepare the CORS request, so send it
 				xhr.send();	
 			}
@@ -552,11 +591,15 @@
 				xhr.onload = function(e) {
 					var responseText = xhr.response;
 					var cardI = "card"+(parseInt(responseText)+1);
-					document.getElementById("card1").style.display = 'block';
+					document.getElementById(cardI).style.display = 'block';
+					document.getElementById(cardI).style.borderColor = "black";
+					document.getElementById(cardI).style.borderWidth = "thick";
 					getGameInfoPackage();
+					getGameOver();
 				}
 				// We have done everything we need to prepare the CORS request, so send it
 				xhr.send();	
+				return cardI;
 			}
 
 			function requestAISelect(){
@@ -624,7 +667,7 @@
 			}
 
 			function getHumanCardOnDeck() {
-						
+				console.log("getHumanCardOnDeck");
 				// First create a CORS request, this is the message we are going to send (a get request in this case)
 				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/updateViewHumanCardOnDeck"); // Request type and URL+parameters
 				// Message is not sent yet, but we can check that the browser supports CORS
@@ -697,12 +740,24 @@
 						document.getElementById("AISelectButton").style.display = 'block';
 						getGameInfoPackage();
 					}
+					getGameInfoPackage();
+					getHumanCardOnDeck();
 				}
 				// We have done everything we need to prepare the CORS request, so send it
 				xhr.send();
 			}
 
-
+			function requestGameInitialised() {
+				// First create a CORS request, this is the message we are going to send (a get request in this case)
+				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/requestGameInitialised"); 
+				if (!xhr) {
+					alert("CORS not supported");
+				}
+				xhr.onload = function(e) {
+				}
+				// We have done everything we need to prepare the CORS request, so send it
+				xhr.send();	
+			}
 
 
 		</script>

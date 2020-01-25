@@ -22,37 +22,28 @@
 
     <body onload="requestGameInitialised()"> <!-- Call the initalize method when the page loads -->
     	
-			<div class="pricing-header px-1 pt-3 md-1 pb-3 mx-auto text-center">
-				<h1 class="display-5">Top Trumps Game</h1>
+		<div class="pricing-header px-1 pt-5 md-1 pb-5 mx-auto text-center">
+				<h1 class="display-5"></h1>
 			</div>
-			<div class="container">
-				<div class="row justify-content-center">
-					<div class="col-auto mb-3"style="float:left;width:30em;">
-						<div id="newGame" class="card mb-4 shadow-sm">
-							
-							<div class="card-header">
-								<h5>Start a new Top Trumps Game</h5>
-							</div>
-
-							<div id="newGame" class="card-body">
-								<a href="http://localhost:7777/toptrumps/game"><button class="btn btn-outline-dark btn-block" >New Game</button></a>
-							</div>
+			<div class="pricing-header px-1 pt-5 md-1 pb-2 mx-auto text-center">
+				<h1 class="display-2">Top Trumps Game</h1>
+			</div>
+			<div class="container" >
+				<div class="row justify-content-center mt-5">
+					<div class="col-auto mt-5"style="width:15em;">
+						<div>
+							<a href="http://localhost:7777/toptrumps/game"><button class="btn btn-outline-dark btn-block text-decoration-none" >New Game</button></a>
 						</div>
 					</div>
-
-					<div class="col-auto mb-3"style="float:right;width:30em;">
-						<div id="newGame" class="card mb-4 shadow-sm">
-							<div id="" class="card-header">
-								<h5>Get Statistics from past Game</h5>
-							</div>
-							<div class="card-body">
-								
-								<a href="http://localhost:7777/toptrumps/stats"><button class="btn btn-outline-dark btn-block" >Game Statistics</button></a>
-							</div>
-							
+					</div>
+				<div class="row justify-content-center mt-0">
+					<div class="col-auto mt-3"style="width:15em;">
+						<div>
+							<a href="http://localhost:7777/toptrumps/stats"><button class="btn btn-outline-dark btn-block" >Game Statistics</button></a>
 						</div>
 					</div>
 				</div>
+				
 			</div>
 			<footer class="pt-4 my-md-5 pt-md-5 border-top"></footer>	
 	</body>

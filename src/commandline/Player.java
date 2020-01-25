@@ -35,6 +35,8 @@ public class Player {
 	public int getWinTimes() {
 		return winTimes;
 	}
+	
+	
 	public void setCardList(List<Card> c) {
 		cardList =c;
 	}

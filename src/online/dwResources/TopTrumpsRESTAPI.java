@@ -197,12 +197,7 @@ public class TopTrumpsRESTAPI {
 		return false;
 	}
 	
-	@GET
-	@Path("/updataViewPlayerResult")
-	public String updataViewPlayerResult() {
-		String[] a = {"The winner was you, you won 100 rounds ", "AI Player1 Lose overall, but won 0 rounds","AI Player2 Lose overall, but won 20 rounds"};
-		return arrayTrans(a);
-	}
+	
 	
 	@GET
 	@Path("/updateViewActivePlayers")
@@ -272,9 +267,16 @@ public class TopTrumpsRESTAPI {
 	@GET
 	@Path("/updateViewGameIsOver")
 	public int updateViewGameIsOver() {
+		System.out.print(model.getHumanLose()+"yooooooo");
+		if(model.getHumanLose()==0) return model.getHumanLose();
 		return model.getGameIsOver();
 	}
 	
+	@GET
+	@Path("/updataViewPlayerResult")
+	public String updataViewPlayerResult() {
+		return arrayTrans(model.getGameResult());
+	}
 	
 	
 	
