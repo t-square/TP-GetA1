@@ -483,11 +483,7 @@ public class GameModel {
 		s.add("The poor losers: ");
 		for(int i=0 ; i< playerList.size() ; i++) {
 			if(finalWinnerIndex==i) {
-				if(finalWinnerIndex==0) {
-				}
-				else {
-					s.add(playerList.get(finalWinnerIndex).getPlayerName()+" won " + playerList.get(finalWinnerIndex).getWinTimes()+" rounds.");
-				}
+				
 			}else {
 				s.add(playerList.get(i).getPlayerName()+" won " + playerList.get(i).getWinTimes()+ " rounds.");
 			}
@@ -516,7 +512,14 @@ public class GameModel {
 	public int getRoundWinnerIndex() {
 		return roundWinnerIndex;
 	}
-	
+	public boolean getHumanIsActivePlayer() {
+		if(activePlayer.equals(playerList.get(0))) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 	
 	
 	public List<Card> getCommonPile(){

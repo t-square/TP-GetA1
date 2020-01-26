@@ -80,7 +80,7 @@ function createCORSRequest(method, url) {
 
 	function requestGameInitialised() {
 				// First create a CORS request, this is the message we are going to send (a get request in this case)
-				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/requestGameInitialised"); 
+				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/userRequestGameInitialised"); 
 				if (!xhr) {
 					alert("CORS not supported");
 				}

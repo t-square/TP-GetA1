@@ -144,35 +144,7 @@ public class TopTrumpsRESTAPI {
 		roundTest();
 	}
 	
-	@GET
-	@Path("/data")
-	public String dataG() {
-		Random r = new Random();
-		String []test =new String[5];
-		String t1 = "name:human,"+r.nextInt(100)+",power:100,\nspeed:100,\nweight:100,\nheight:100,\ncute:100";
-		String t2 = "name:fat,"+r.nextInt(100)+",\npower:9,\nspeed:100,\nweight:100,\nheight:100,\ncute:0";
-		String t3 = "name:pig,"+r.nextInt(100)+",\npower:100,\nspeed:100,\nweight:100,\nheight:100,\ncute:0";
-		String t4 = "name:baby,"+r.nextInt(100)+",\npower:59,\nspeed:100,\nweight:50,\nheight:100,\ncute:20";
-		String t5 = "name:girl,"+r.nextInt(100)+",\npower:100,\nspeed:70,\nweight:100,\nheight:50,\ncute:100";
-		
-		test[0]= t1;
-		test[1]= t2;
-		test[2]= t3;
-		test[3]= t4;
-		test[0]= t5;
-		return 	arrayTrans(test);
-	}
-	
-	
-	
-	
-	@GET
-	@Path("/pdata")
-	public String pdataG() {
-		String t1 = "name: player,"+10+",\npower: 100,\nspeed: 100,\nweight: 100,\nheight: 100,\ncute: 100";
-		return 	t1;
-	}
-	
+
 	
 	@GET
 	@Path("/gameRole")
@@ -222,19 +194,6 @@ public class TopTrumpsRESTAPI {
 	
 	
 	
-	@GET
-	@Path("/requestGameInitialised")
-	public void requestGameInitialised() {
-		model.initialiseGame(5);
-	}
-	
-	@GET
-	@Path("/requestGameDraw")
-	public String requestGameDraw() {
-		model.decideActivePlayers();
-		model.draw();
-		return updateViewGameInformPackage();
-	}
 	
 	@GET
 	@Path("/requestAISelect")
@@ -256,14 +215,7 @@ public class TopTrumpsRESTAPI {
 		 model.humanSelect(num);
 	}
 	
-	@GET
-	@Path("/requsetViewShowWinner")
-	public int requsetViewShowWinner() {
-		model.showWinner();
-		model.gameIsOver();
-		return model.getRoundWinnerIndex();
-	}
-	
+
 	@GET
 	@Path("/updateViewGameIsOver")
 	public int updateViewGameIsOver() {
@@ -295,10 +247,86 @@ public class TopTrumpsRESTAPI {
 		return model.getCardStringOnDeck()[0];
 	}
 	
+	int cmd = 0;
+	@GET
+	@Path("/webMaster")
+	public int webMaster() {
+		return cmd;	
+	}
+	
+	
+	
+	@GET
+	@Path("/userRequestGameInitialised")
+	public void userRequestGameInitialised() {
+		model.initialiseGame(5);
+		model.decideActivePlayers();
+		model.draw();
+		setViewActivePlayer();
+	}
 	
 	
 	
 	
+	
+	
+	@GET
+	@Path("/userPressNewTurn")
+	public void userPressNewTurn() {
+		model.decideActivePlayers();
+		model.draw();
+		setViewActivePlayer();
+	}
+	
+	
+	public void setViewActivePlayer() {
+		if(model.getHumanIsActivePlayer()) {
+			cmd = 2;
+		}else {
+			cmd = 4;
+		}
+	}
+	
+	
+	
+	@GET
+	@Path("/userPressSelect")
+	public void userPressSelect() {
+		if(model.getHumanIsActivePlayer()) {
+			cmd = 3;
+		}else {
+			model.AISelect();
+			cmd = 5;
+		}
+	}
+	
+	
+	
+	@GET
+	@Path("/userSelect")
+	public void userSelect(@QueryParam("Word") int num) {
+		 model.humanSelect(num);
+		 cmd = 5;
+	}
+	
+	@GET
+	@Path("/userPressShowWinner")
+	public void userPressShowWinner() {
+		model.showWinner();
+		model.gameIsOver();
+		if(model.getHumanLose()==0||model.getGameIsOver()==0){
+			cmd = 7;
+		}
+		else {
+			cmd = 6;
+		}
+	}
+	
+	@GET
+	@Path("/updateRoundWinner")
+	public int updateRoundWinner() {
+		return model.getRoundWinnerIndex();
+	}
 	public String arrayTrans(String[] in) {
 		String s = "";
 		s+=in[0]+"|?|";

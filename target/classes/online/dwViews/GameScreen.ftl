@@ -20,7 +20,7 @@
 
 	</head>
 
-    <body onload=initalize()> <!-- Call the initalize method when the page loads -->
+    <body onload=stage()> <!-- Call the initalize method when the page loads -->
     	
     	<div class="container">
 
@@ -72,29 +72,29 @@
 								<h4></h4>
 							</div>
 							<div id="showWinner">
-								<button class="btn btn-outline-dark btn-lg  mb-0" onclick="winnerStage()">Show winner</button>
+								<button class="btn btn-outline-dark btn-lg mt-3 mb-0" onclick="userPressShowWinner()">Show winner</button>
 							</div>
 
 							<div id="nextRound">
-								<button class="btn btn-outline-dark btn-lg mt-3 mb-0" onclick="nextRound()">Next round</button>
+								<button class="btn btn-outline-dark btn-lg mt-3 mb-0" onclick="userPressNewTurn()">Next round</button>
 							</div>
 
 
-							<div id="humanselectButton">
-								<button class="btn btn-outline-dark btn-lg mt-3 mb-0" onclick="humanActived()">Select</button>
+							<div id="humanSelectButton">
+								<button class="btn btn-outline-dark btn-lg mt-3 mb-0" onclick="userPressSelect()">Select</button>
 							</div>
 
 							<div id="AISelectButton">
-								<button class="btn btn-outline-dark btn-lg mt-3 mb-0" onclick="showAISelection()">Show AI's selection..</button>
+								<button class="btn btn-outline-dark btn-lg mt-3 mb-0" onclick="userPressSelect()">Show AI's selection..</button>
 							</div>
 							
 
 							<div id = selectList class="list-group">
-								<li class="list-group-item list-group-item-action list-group-item-light" onclick="selectAttr1()">Size</li>
-								<li class="list-group-item list-group-item-action list-group-item-light" onclick="selectAttr2()">Speed</li>
-								<li class="list-group-item list-group-item-action list-group-item-light" onclick="selectAttr3()">Range</li>
-								<li class="list-group-item list-group-item-action list-group-item-light" onclick="selectAttr4()">Firepower</li>
-								<li class="list-group-item list-group-item-action list-group-item-light" onclick="selectAttr5()">Cargo</li>
+								<li class="list-group-item list-group-item-action list-group-item-light" onclick="userSelectAttr1()">Size</li>
+								<li class="list-group-item list-group-item-action list-group-item-light" onclick="userSelectAttr2()">Speed</li>
+								<li class="list-group-item list-group-item-action list-group-item-light" onclick="userSelectAttr3()">Range</li>
+								<li class="list-group-item list-group-item-action list-group-item-light" onclick="userSelectAttr4()">Firepower</li>
+								<li class="list-group-item list-group-item-action list-group-item-light" onclick="userSelectAttr5()">Cargo</li>
 							</div>
 							
 							<div >
@@ -269,34 +269,7 @@
 				clear();
 				document.getElementById("startPanel").style.display = 'block';
 			}
-
-			function startGame() {
-				document.getElementById("gamePanel").style.display = 'block';
-				requestDraw();
-			}
 			
-			function drawStage() {
-			
-				// --------------------------------------------------------------------------
-				// You can call other methods you want to run when the page first loads here
-				// --------------------------------------------------------------------------
-				// For example, lets call our sample methods
-
-				requestDraw();
-			}
-			
-			function selectStage(){			
-				getGameInfoPackage();
-				HumanIsActivePlayer();
-				getHumanCardOnDeck();
-
-			}
-
-
-			function winnerStage(){
-				requestWinner();
-			}
-
 
 			function humanActived(){
 				clear();
@@ -316,19 +289,14 @@
 				document.getElementById("showWinner").style.display  = 'block';
 				getCardOnDeck();
 			}
-
-		
-
-			function nextRound(){
-				requestDraw();
-			}
+			
 
 
 			function clear(){
 				document.getElementById("startPanel").style.display = 'none';
 				document.getElementById("showWinner").style.display = 'none';
 				document.getElementById("nextRound").style.display = 'none';
-				document.getElementById("humanselectButton").style.display = 'none';
+				document.getElementById("humanSelectButton").style.display = 'none';
 				document.getElementById("AISelectButton").style.display = 'none';
 				document.getElementById("selectList").style.display = 'none';
 				document.getElementById("selectStatus").style.display = 'none';
@@ -348,29 +316,8 @@
 
 
 
-			function selectAttr1(){
-				sendPlayerSelect("1");
-			}
-			
-			function selectAttr2(){
-				sendPlayerSelect("2");
-			}
-
-			function selectAttr3(){
-				sendPlayerSelect("3");
-			}
-
-			function selectAttr4(){
-				sendPlayerSelect("4");
-			}
-
-			function selectAttr5(){
-				sendPlayerSelect("5");
-			}
-
 			function playerSelect(num){
 				sendPlayerSelect(num);
-				
 			}
 
 			function decodeString(s){
@@ -386,6 +333,214 @@
 					document.getElementById(targetID).getElementsByClassName(targetCl)[j].innerHTML=s[j];
 				}
 			}
+
+			function setUpCard(s,n){
+				var name = new Array();
+				var num = new Array();
+				var attr =new Array();
+				var cardNameI= "cardName"+(n+1);
+				var numCardI= "numCards"+(n+1);
+				var cardCI= "cardContent"+(n+1);
+				name =s[0].split('Name:');
+				num	= s[1];
+				document.getElementById(cardNameI).innerHTML = name[1];
+				document.getElementById(numCardI).innerHTML = num;
+				for(j=2 ; j<s.length; j++){
+					document.getElementById(cardCI).getElementsByClassName("attr")[j-2].innerHTML=s[j];
+				}
+			}
+
+
+			
+
+			
+			function stage(){
+				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/webMaster"); 
+				if (!xhr) {
+					alert("CORS not supported");
+				}
+
+				xhr.onload = function(e) {
+					var num = xhr.response;
+					if(num == 1){
+
+					}
+
+					if(num == 2){
+						playerSelectEnableStage();
+					}
+					if(num == 3){
+						playerSelectListStage();
+					}
+
+					if(num == 4){
+						waitAIPlayerStage();
+					}
+
+					if(num == 5){
+						selectionResultStage();
+					}
+
+					if(num == 6){
+						showWinnerStage();
+					}
+					
+					if(num == 7){
+						showGameResultStage();
+					}
+				}
+				// We have done everything we need to prepare the CORS request, so send it
+				xhr.send();	
+			}
+
+
+
+
+			function playerSelectEnableStage(){
+				clear();
+				getHumanCardOnDeck();
+				getGameInfoPackage();
+				document.getElementById("humanSelectButton").style.display  = 'block';
+			}
+
+			function playerSelectListStage(){
+				clear();
+				getHumanCardOnDeck();
+				getGameInfoPackage();
+				document.getElementById("selectList").style.display  = 'block';
+			}
+
+
+			function waitAIPlayerStage(){
+				clear();
+				getHumanCardOnDeck();
+				getGameInfoPackage();
+				document.getElementById("AISelectButton").style.display = 'block';
+			}
+
+
+			function selectionResultStage(){
+				clear();
+				getCardOnDeck();
+				getGameInfoPackage();
+				document.getElementById("showWinner").style.display  = 'block';
+			}
+
+
+			function showWinnerStage(){
+				clear();				
+				getCardOnDeck();
+				getGameInfoPackage();
+				getWinner();
+				document.getElementById("nextRound").style.display  = 'block';
+			}
+
+			function showGameResultStage(){
+				clear();
+				getCardOnDeck();
+				getGameInfoPackage();
+				getWinner();
+				getPlayerResult();
+				document.getElementById("playerResult").style.display = 'block';
+
+			}
+
+
+
+
+
+			function userPressNewTurn(){
+				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/userPressNewTurn"); 
+				if (!xhr) {
+					alert("CORS not supported");
+				}
+				xhr.onload = function(e) {
+					stage();
+				}
+				xhr.send();	
+			}
+
+
+			function userPressSelect(){
+				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/userPressSelect"); 
+				if (!xhr) {
+					alert("CORS not supported");
+				}
+				xhr.onload = function(e) {
+					stage();
+				}
+				xhr.send();	
+			}
+
+
+			function userSelectAttr1(){
+				userSelect("1");
+			}
+			
+			function userSelectAttr2(){
+				userSelect("2");
+			}
+
+			function userSelectAttr3(){
+				userSelect("3");
+			}
+
+			function userSelectAttr4(){
+				userSelect("4");
+			}
+
+			function userSelectAttr5(){
+				userSelect("5");
+			}
+
+
+
+			function userSelect(num) {
+				// First create a CORS request, this is the message we are going to send (a get request in this case)
+				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/userSelect?Word="+num); // Request type and URL+parameters
+				if (!xhr) {
+  					alert("CORS not supported");
+				}
+				xhr.onload = function(e) {
+					stage();
+				}
+				// We have done everything we need to prepare the CORS request, so send it
+				xhr.send();		
+			}
+		
+			function userPressShowWinner(){
+				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/userPressShowWinner"); 
+				if (!xhr) {
+					alert("CORS not supported");
+				}
+				xhr.onload = function(e) {
+					stage();
+				}
+				xhr.send();	
+			}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 			function setUpCard(s,n){
 				var name = new Array();
@@ -465,24 +620,7 @@
 			}
 			
 
-			function sendPlayerSelect(num) {
-				// First create a CORS request, this is the message we are going to send (a get request in this case)
-				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/askViewHumanSelect?Word="+num); // Request type and URL+parameters
-				// Message is not sent yet, but we can check that the browser supports CORS
-				if (!xhr) {
-  					alert("CORS not supported");
-				}
-				// CORS requests are Asynchronous, i.e. we do not wait for a response, instead we define an action
-				// to do when the response arrives 
-				xhr.onload = function(e) {	
-					document.getElementById("selectList").style.display = 'none';
-				}
-				// We have done everything we need to prepare the CORS request, so send it
-				xhr.send();		
-				getCardOnDeck();
-				getGameInfoPackage();
-				document.getElementById("showWinner").style.display  = 'block';
-			}
+			
 
 
 		
@@ -492,15 +630,13 @@
 						alert("CORS not supported");
 					}
 					xhr.onload = function(e) {
-						if(xhr.response == 0 || xhr.response == 1){
+						if(xhr.response == 0){
 							console.log(xhr.response+ "!!!!!");
-							document.getElementById("showWinner").style.display  = 'none';
 							document.getElementById("nextRound").style.display  = 'none';
 							getPlayerResult();
 						}else{
 							console.log(xhr.response+ "gameisnoover");
-							document.getElementById("showWinner").style.display  = 'none';
-							document.getElementById("nextRound").style.display  = 'block';
+
 						}
 					}
 				xhr.send();
@@ -521,8 +657,7 @@
 					strr = javaArrayDecode(responseText);
 					setUpElements(strr,"playerResult", "result");
 					document.getElementById("playerResult").style.display = 'block';
-					document.getElementById("showWinner").style.display = 'none';	
-					document.getElementById("returnToMenu").style.display = 'none';	
+					document.getElementById("returnToMenu").style.display = 'block';	
 				}
 				
 				xhr.send();
@@ -573,18 +708,15 @@
 					alert("CORS not supported");
 				}
 				clear();
-				xhr.onload = function(e) {
-					getGameInfoPackage();
-					selectStage();
-				}
+				xhr.onload = function(e) {}
 				
 				// We have done everything we need to prepare the CORS request, so send it
 				xhr.send();	
 			}
 			
-			function requestWinner() {
+			function getWinner() {
 				// First create a CORS request, this is the message we are going to send (a get request in this case)
-				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/requsetViewShowWinner"); 
+				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/updateRoundWinner"); 
 				if (!xhr) {
 					alert("CORS not supported");
 				}
@@ -594,8 +726,7 @@
 					document.getElementById(cardI).style.display = 'block';
 					document.getElementById(cardI).style.borderColor = "black";
 					document.getElementById(cardI).style.borderWidth = "thick";
-					getGameInfoPackage();
-					getGameOver();
+
 				}
 				// We have done everything we need to prepare the CORS request, so send it
 				xhr.send();	
@@ -616,11 +747,6 @@
 
 
 
-
-
-
-
-
 			function getGameInfoPackage(){
 				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/updateViewGameInformPackage"); 
 					if (!xhr) {
@@ -636,9 +762,6 @@
 					// We have done everything we need to prepare the CORS request, so send it
 					xhr.send();	
 			}
-
-
-
 
 
 			function getRole() {
