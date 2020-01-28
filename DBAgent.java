@@ -19,10 +19,10 @@ public class DBAgent {
     * - Execute SQl queries
     * - Get SQL ResultSet
     * - Close Statements
-    * - Close connection
+    * - Close connection 
     */
 
-	private String sqlAddress = "jdbc:postgresql://localhost:5432/Top Trumps";
+	private String sqlAddress = "jdbc:postgresql://localhost:5432/TopTrumps";
 	private String sqlUsername = "Manager";
 	private String sqlPassword = "123456";
 	
@@ -139,6 +139,179 @@ public class DBAgent {
             System.err.println(e.getClass().getName()+": "+e.getMessage());
             System.exit(0);
         }			
+	}
+
+	/*
+	 * updateGame
+	 * Adds game information to the database
+	 * parameters: PlayerName, WinTime, Winner, RoundsPlayed, RoundsWon, NumberOfDraws
+	 * 
+	 */
+	public void updateGame(String sPlayer, 
+			int winTime,
+			String sWinner,
+			int roundsPlayed,
+			int roundsWon,
+			int numberOfDraws) {
+		
+		String sUpdate;
+		
+		sUpdate = "INSERT INTO  public.\"GameStatus\""
+				+ "( \"NumberOfDraws\", \"PName\", \"WinTime\", \"Winner\", \"RoundsPlayed\", \"RoundsWon\") "
+				+ "VALUES ('" 
+				+ numberOfDraws + "', '{" 
+				+ sPlayer + "}', '" 
+				+ winTime + "', '{" 
+				+ sWinner + "}', '" 
+				+ roundsPlayed + "', '" 
+				+ roundsWon + "');"; 
+		
+		// System.out.println("updateGame: " + sUpdate);		
+        sendUpdate(sUpdate);
+		
+	}
+
+	/* Query 1
+	 * 1. Get total game played overall:
+	 * SELECT COUNT(*) AS TOTAL_GAME_NUMBER
+	 * FROM GAMESTATUS
+	 */	
+	public int getTotalGamesPlayed() {
+		
+		int nTotal = -1;
+		java.sql.ResultSet rResultSet;
+		String sQuery = "SELECT COUNT(*) AS TOTAL_GAME_NUMBER FROM public.\"GameStatus\"";
+		
+		try {  	      
+				rResultSet = sendQuery(sQuery);
+				while (rResultSet.next()) {
+					nTotal = Integer.parseInt(rResultSet.getString("TOTAL_GAME_NUMBER"));
+				}
+		}
+		catch (Exception e) {
+				// Print exception information
+	           e.printStackTrace();
+	           System.err.println(e.getClass().getName()+": "+e.getMessage());
+	           System.exit(0);
+	    }		
+		return nTotal;
+	
+	}
+
+	/* Query 2
+	 * 2. Get number of AI wins:
+	 * SELECT COUNT(*) AS NUMBER_OF_AI_WINS
+	 * FROM GAMESTATUS
+	 * WHERE WINNER = AI
+	 */
+	public int getAIWins() {
+		
+		int nTotal = -1;
+		java.sql.ResultSet rResultSet;
+		String sQuery = "SELECT COUNT(*) AS NUMBER_OF_AI_WINS "
+				+ "FROM public.\"GameStatus\" "
+				+ "WHERE \"Winner\" = '{AI}'";
+		
+		try {  	      
+				rResultSet = sendQuery(sQuery);
+				while (rResultSet.next()) {
+					nTotal = Integer.parseInt(rResultSet.getString("NUMBER_OF_AI_WINS"));
+				}
+		}
+		catch (Exception e) {
+				// Print exception information
+	           e.printStackTrace();
+	           System.err.println(e.getClass().getName()+": "+e.getMessage());
+	           System.exit(0);
+	    }		
+		return nTotal;
+		
+	}
+	
+	/* Query 3
+	 * 3.  Get number of human wins:
+	 * SELECT COUNT(*) AS NUMBER_OF_HUMAN_WINS
+	 * FROM GAMESTATUS
+	 * WHERE WINNER = USER
+	 */
+	public int getHumanWins() {
+		
+		int nTotal = -1;
+		java.sql.ResultSet rResultSet;
+		String sQuery = "SELECT COUNT(*) AS NUMBER_OF_HUMAN_WINS "
+				+ "FROM public.\"GameStatus\" "
+				+ "WHERE \"Winner\" != '{AI}'";
+		
+		try {  	      
+				rResultSet = sendQuery(sQuery);
+				while (rResultSet.next()) {
+					nTotal = Integer.parseInt(rResultSet.getString("NUMBER_OF_HUMAN_WINS"));
+				}
+		}
+		catch (Exception e) {
+				// Print exception information
+	           e.printStackTrace();
+	           System.err.println(e.getClass().getName()+": "+e.getMessage());
+	           System.exit(0);
+	    }		
+		return nTotal;
+		
+	}
+	
+	/* Query 4
+	 * 4. Get average draws
+	 * SELECT Avg(draws) AS AVERAGE_DRAWS
+	 * FROM GAMESTATUS 
+	 */
+	public int getAvgDraws() {
+		
+		double rTotal = -1.0;
+		java.sql.ResultSet rResultSet;
+		String sQuery = "SELECT AVG(\"NumberOfDraws\") AS AVERAGE_DRAWS "
+				+ "FROM public.\"GameStatus\" ";
+		
+		try {  	      
+				rResultSet = sendQuery(sQuery);
+				while (rResultSet.next()) {
+					rTotal = Double.parseDouble(rResultSet.getString("AVERAGE_DRAWS"));
+				}
+		}
+		catch (Exception e) {
+				// Print exception information
+	           e.printStackTrace();
+	           System.err.println(e.getClass().getName()+": "+e.getMessage());
+	           System.exit(0);
+	    }		
+		return (int)rTotal;
+		
+	}
+	
+	/* Query 5
+	 * 5. Get the largest number of rounds played in a single game
+	 * SELECT Max(RoundsPlayed) AS MOST_ROUNDS_PLAYED
+	 * FROM GAMESTATUS 
+	 */
+	public int getLargestRoundsPlayed() {
+		
+		int nTotal = -1;
+		java.sql.ResultSet rResultSet;
+		String sQuery = "SELECT MAX(\"RoundsPlayed\") AS MOST_ROUNDS_PLAYED "
+				+ "FROM public.\"GameStatus\" ";
+		
+		try {  	      
+				rResultSet = sendQuery(sQuery);
+				while (rResultSet.next()) {
+					nTotal = Integer.parseInt(rResultSet.getString("MOST_ROUNDS_PLAYED"));
+				}
+		}
+		catch (Exception e) {
+				// Print exception information
+	           e.printStackTrace();
+	           System.err.println(e.getClass().getName()+": "+e.getMessage());
+	           System.exit(0);
+	    }		
+		return nTotal;
+		
 	}
 
 }

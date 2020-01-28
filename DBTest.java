@@ -19,7 +19,7 @@ public class DBTest {
     public static void main(String args[]) {
         // input from standard in
     	DBAgent dbA = new DBAgent(); // use a single DBAgent instance to connect to a database
-
+    	int nResult = -1;
   
     	// Test command interface
   /*
@@ -43,12 +43,11 @@ public class DBTest {
         	System.out.println("Database is NOT online. Exiting");
         	return;
         }
-
-        try {
-  	      
+/*
+        try {  	      
            dbA.sendUpdate("INSERT INTO  public.\"GameStatus\""
-           		+ "(\"GameID\", \"GameDate\", \"GameTime\", \"NumberOfDraws\", \"PlayerID\", \"Winner\", \"WinnerType\", \"RoundsPlayed\", \"RoundsWon\") "
-           		+ "VALUES ('5', '{01/27/2020}', '{10:00:00}', '5', '2', '{PlayerOne}', '1', '6', '3 );");
+              		+ "( \"NumberOfDraws\", \"PName\", \"WinTime\", \"Winner\", \"RoundsPlayed\", \"RoundsWon\") "
+              		+ "VALUES ('10', '{PlayerOne}', '5', '{AI}', '15', '3');");
   		}
         
  		catch (Exception e) {
@@ -57,12 +56,12 @@ public class DBTest {
             System.err.println(e.getClass().getName()+": "+e.getMessage());
             System.exit(0);
         }	
-        
+*/       
         try {
     	      
            java.sql.ResultSet sResult =  dbA.sendQuery("SELECT * FROM public.\"GameStatus\"");
 	       while (sResult.next()) {
-				System.out.println("GameDate: " + sResult.getString("GameDate"));
+				System.out.println("GameID: " + sResult.getString("GameID"));
 	       }
 		}
 		catch (Exception e) {
@@ -71,8 +70,25 @@ public class DBTest {
            System.err.println(e.getClass().getName()+": "+e.getMessage());
            System.exit(0);
        }	
-     
-        // Test close connection
+   
+        dbA.updateGame("PlayerTwo", 5, "AI", 45, 23, 10);
+        
+        nResult = dbA.getTotalGamesPlayed();
+		System.out.println("TOTAL_GAME_NUMBER: " + nResult);
+		
+        nResult = dbA.getAIWins();
+		System.out.println("TOTAL_AI_WINS: " + nResult);
+		
+        nResult = dbA.getHumanWins();
+		System.out.println("TOTAL_HUMAN_WINS: " + nResult);
+		
+        nResult = dbA.getAvgDraws();
+		System.out.println("AVERAGE_DRAWS: " + nResult);
+				
+        nResult = dbA.getLargestRoundsPlayed();
+		System.out.println("MOST_ROUNDS_PLAYED: " + nResult);
+		
+      // Test close connection
         dbA.closeConnection();
         System.out.println("Database is closed.");
     }
