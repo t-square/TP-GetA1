@@ -1,14 +1,11 @@
-package DBAccess;
+package commandline;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.util.Scanner;
-
-import com.mysql.jdbc.Statement;
 
 /**
  *
- * @author TvA
+ * @author TingTingvanAbbema
  */
 
 public class DBAgent {
@@ -29,23 +26,18 @@ public class DBAgent {
 	Connection cSQL = null; // SQL connection object
 	
 	// Empty initializer
-	public void DBAgent() {		
+	public DBAgent() {		
 		
 	}
 	
 	// Open a database connection, return true if success
-	public boolean openConnection(int nTimeout)
+	public boolean openConnection()
 	{
 		try {
 			// Use postgresql driver
 			Class.forName("org.postgresql.Driver");
 			cSQL = DriverManager.getConnection(sqlAddress, sqlUsername, sqlPassword);
-        
-	        // Limit wait for database to maximum of 10s, minimum of 1s, default 5s
-	        if (nTimeout <= 0 && nTimeout > 10) {
-	        	nTimeout = 5;
-	        }
-	        
+        	        
 	        // Verify that the connection is OK
 	        if (cSQL != null)
 	        {	        
@@ -80,28 +72,28 @@ public class DBAgent {
 
 	// set the address for the SQL access, ignore if null
 	// Format "jdbc:postgresql://SERVER:PORT/DATABASE"
-	public void setSQLAddress(String sAddress) {
-		System.out.println("sAddress: " + sAddress);		
-		if (!sAddress.isEmpty()) {
-			sqlAddress = sAddress;
-		}
-	}
-
-	// set the user name for SQL access, ignore if null
-	public void setSQLUsername(String sUsername) {
-		System.out.println("sUsername: " + sUsername);
-		if (!sUsername.isEmpty()) {
-			sqlUsername = sUsername;
-		}
-	}
-
-	// Set the user name for SQL access, ignore if null
-	public void setSQLPassword(String sPassword) {
-		System.out.println("sPassword: " + sPassword);
-		if (!sPassword.isEmpty()) {
-			sqlPassword = sPassword;
-		}
-	}
+//	public void setSQLAddress(String sAddress) {
+//		System.out.println("sAddress: " + sAddress);		
+//		if (!sAddress.isEmpty()) {
+//			sqlAddress = sAddress;
+//		}
+//	}
+//
+//	// set the user name for SQL access, ignore if null
+//	public void setSQLUsername(String sUsername) {
+//		System.out.println("sUsername: " + sUsername);
+//		if (!sUsername.isEmpty()) {
+//			sqlUsername = sUsername;
+//		}
+//	}
+//
+//	// Set the user name for SQL access, ignore if null
+//	public void setSQLPassword(String sPassword) {
+//		System.out.println("sPassword: " + sPassword);
+//		if (!sPassword.isEmpty()) {
+//			sqlPassword = sPassword;
+//		}
+//	}
 	
 	// Send a SQL query, return a ResultSet object
 	public java.sql.ResultSet sendQuery(String sQuery) {
@@ -142,31 +134,51 @@ public class DBAgent {
 	}
 
 	/*
-	 * updateGame
+	 * updateGame method
 	 * Adds game information to the database
-	 * parameters: PlayerName, WinTime, Winner, RoundsPlayed, RoundsWon, NumberOfDraws
-	 * 
+	 * GameStatus table parameters: GameID, DrawTimes, RoundsPlayed, Winner
+	 * PlayerPerformance table parameters: GameID, PlayerName, WinTimes
 	 */
-	public void updateGame(String sPlayer, 
-			int winTime,
-			String sWinner,
-			int roundsPlayed,
-			int roundsWon,
-			int numberOfDraws) {
+	public void updateGameStatus(int nGameID, 
+			int nRoundsPlayed,
+			int nDrawTimes,
+			String sWinner) {
 		
 		String sUpdate;
 		
 		sUpdate = "INSERT INTO  public.\"GameStatus\""
-				+ "( \"NumberOfDraws\", \"PName\", \"WinTime\", \"Winner\", \"RoundsPlayed\", \"RoundsWon\") "
+				+ "( \"GameID\", \"RoundsPlayed\", \"DrawTimes\", \"Winner\") "
 				+ "VALUES ('" 
-				+ numberOfDraws + "', '{" 
-				+ sPlayer + "}', '" 
-				+ winTime + "', '{" 
-				+ sWinner + "}', '" 
-				+ roundsPlayed + "', '" 
-				+ roundsWon + "');"; 
+				+ nGameID + "', '" 
+				+ nRoundsPlayed + "', '" 
+				+ nDrawTimes + "', '{" 
+				+ sWinner + "}');"; 
 		
-		// System.out.println("updateGame: " + sUpdate);		
+		// System.out.println("updateGameStatus: " + sUpdate);		
+        sendUpdate(sUpdate);
+		
+	}
+
+	/*
+	 * updateGame method
+	 * Adds game information to the database
+	 * GameStatus table parameters: GameID, DrawTimes, RoundsPlayed, Winner
+	 * PlayerPerformance table parameters: GameID, PlayerName, WinTimes
+	 */
+	public void updatePlayerStatus(int nGameID, 
+			String sPlayerName,
+			int nWinTimes) {
+		
+		String sUpdate;
+		
+		sUpdate = "INSERT INTO  public.\"PlayerPerformance\""
+				+ "( \"GameID\", \"PName\", \"WinTimes\") "
+				+ "VALUES ('" 
+				+ nGameID + "', '{" 
+				+ sPlayerName + "}', '"
+				+ nWinTimes + "');"; 
+		
+		// System.out.println("updatePlaerStatus: " + sUpdate);		
         sendUpdate(sUpdate);
 		
 	}
@@ -180,12 +192,14 @@ public class DBAgent {
 		
 		int nTotal = -1;
 		java.sql.ResultSet rResultSet;
-		String sQuery = "SELECT COUNT(*) AS TOTAL_GAME_NUMBER FROM public.\"GameStatus\"";
+		String sQuery = "SELECT COUNT(*) AS TOTAL_GAME_NUMBER FROM \"GameStatus\"";
 		
 		try {  	      
 				rResultSet = sendQuery(sQuery);
 				while (rResultSet.next()) {
-					nTotal = Integer.parseInt(rResultSet.getString("TOTAL_GAME_NUMBER"));
+					if (rResultSet.getString("TOTAL_GAME_NUMBER") != null){												
+						nTotal = Integer.parseInt(rResultSet.getString("TOTAL_GAME_NUMBER"));
+					} 
 				}
 		}
 		catch (Exception e) {
@@ -209,13 +223,15 @@ public class DBAgent {
 		int nTotal = -1;
 		java.sql.ResultSet rResultSet;
 		String sQuery = "SELECT COUNT(*) AS NUMBER_OF_AI_WINS "
-				+ "FROM public.\"GameStatus\" "
-				+ "WHERE \"Winner\" = '{AI}'";
+				+ "FROM \"GameStatus\" "
+				+ "WHERE \"Winner\" != '{YOU}' ";
 		
 		try {  	      
 				rResultSet = sendQuery(sQuery);
 				while (rResultSet.next()) {
-					nTotal = Integer.parseInt(rResultSet.getString("NUMBER_OF_AI_WINS"));
+					if (rResultSet.getString("NUMBER_OF_AI_WINS") != null){												
+						nTotal = Integer.parseInt(rResultSet.getString("NUMBER_OF_AI_WINS"));
+					} 
 				}
 		}
 		catch (Exception e) {
@@ -240,12 +256,14 @@ public class DBAgent {
 		java.sql.ResultSet rResultSet;
 		String sQuery = "SELECT COUNT(*) AS NUMBER_OF_HUMAN_WINS "
 				+ "FROM public.\"GameStatus\" "
-				+ "WHERE \"Winner\" != '{AI}'";
+				+ "WHERE \"Winner\" = '{You}'";
 		
 		try {  	      
 				rResultSet = sendQuery(sQuery);
 				while (rResultSet.next()) {
-					nTotal = Integer.parseInt(rResultSet.getString("NUMBER_OF_HUMAN_WINS"));
+					if (rResultSet.getString("NUMBER_OF_HUMAN_WINS") != null){												
+						nTotal = Integer.parseInt(rResultSet.getString("NUMBER_OF_HUMAN_WINS"));
+					} 
 				}
 		}
 		catch (Exception e) {
@@ -260,20 +278,22 @@ public class DBAgent {
 	
 	/* Query 4
 	 * 4. Get average draws
-	 * SELECT Avg(draws) AS AVERAGE_DRAWS
+	 * SELECT Avg(DrawTimes) AS AVERAGE_DRAWS
 	 * FROM GAMESTATUS 
 	 */
 	public int getAvgDraws() {
 		
 		double rTotal = -1.0;
 		java.sql.ResultSet rResultSet;
-		String sQuery = "SELECT AVG(\"NumberOfDraws\") AS AVERAGE_DRAWS "
+		String sQuery = "SELECT AVG(\"DrawTimes\") AS AVERAGE_DRAWS "
 				+ "FROM public.\"GameStatus\" ";
 		
 		try {  	      
 				rResultSet = sendQuery(sQuery);
 				while (rResultSet.next()) {
-					rTotal = Double.parseDouble(rResultSet.getString("AVERAGE_DRAWS"));
+					if (rResultSet.getString("AVERAGE_DRAWS") != null){												
+						rTotal = Double.parseDouble(rResultSet.getString("AVERAGE_DRAWS"));
+					} 
 				}
 		}
 		catch (Exception e) {
@@ -293,15 +313,17 @@ public class DBAgent {
 	 */
 	public int getLargestRoundsPlayed() {
 		
-		int nTotal = -1;
-		java.sql.ResultSet rResultSet;
+		int nTotal = -1; 
+		java.sql.ResultSet rResultSet; 
 		String sQuery = "SELECT MAX(\"RoundsPlayed\") AS MOST_ROUNDS_PLAYED "
 				+ "FROM public.\"GameStatus\" ";
 		
 		try {  	      
 				rResultSet = sendQuery(sQuery);
 				while (rResultSet.next()) {
-					nTotal = Integer.parseInt(rResultSet.getString("MOST_ROUNDS_PLAYED"));
+					if (rResultSet.getString("MOST_ROUNDS_PLAYED") != null){												
+						nTotal = Integer.parseInt(rResultSet.getString("MOST_ROUNDS_PLAYED"));
+					} 
 				}
 		}
 		catch (Exception e) {
@@ -310,6 +332,41 @@ public class DBAgent {
 	           System.err.println(e.getClass().getName()+": "+e.getMessage());
 	           System.exit(0);
 	    }		
+		return nTotal;
+		
+	}
+
+	/* Query 6
+	 * 6. Get the maximum Game ID
+	 * SELECT Max(GameID) AS MAX_GAME_ID
+	 * FROM GAMESTATUS 
+	 */
+
+	public int getMaxGameID() {
+		
+		int nTotal = -1; 
+		String sQuery = "SELECT MAX(\"GameID\") AS MAX_GAME_ID "
+				+ "FROM public.\"GameStatus\" ";
+		
+		try {  	      
+				java.sql.ResultSet rResultSet = sendQuery(sQuery);
+				while (rResultSet.next()) {
+					if (rResultSet.getString("MAX_GAME_ID") != null){												
+						nTotal = Integer.parseInt(rResultSet.getString("MAX_GAME_ID"));
+					} else
+					{
+						nTotal = 0; // no data yet in the database, set GameID to 0
+					}
+				}
+		}
+		catch (Exception e) {
+				// Print exception information
+	           e.printStackTrace();
+	           System.err.println(e.getClass().getName()+": "+e.getMessage());
+	           System.exit(0);
+	    }	
+		if (nTotal <= 0) nTotal = 0;
+		
 		return nTotal;
 		
 	}
