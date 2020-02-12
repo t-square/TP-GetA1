@@ -19,9 +19,9 @@ public class DBAgent {
     * - Close connection 
     */
 
-	private String sqlAddress = "jdbc:postgresql://localhost:5432/TopTrumps";
-	private String sqlUsername = "Manager";
-	private String sqlPassword = "123456";
+	private String sqlAddress = "jdbc:postgresql://52.24.215.108/GetA1";
+	private String sqlUsername = "GetA1";
+	private String sqlPassword = "GetA1";
 	
 	Connection cSQL = null; // SQL connection object
 	
@@ -190,7 +190,7 @@ public class DBAgent {
 	 */	
 	public int getTotalGamesPlayed() {
 		
-		int nTotal = -1;
+		int nTotal = 0;
 		java.sql.ResultSet rResultSet;
 		String sQuery = "SELECT COUNT(*) AS TOTAL_GAME_NUMBER FROM \"GameStatus\"";
 		
@@ -220,7 +220,7 @@ public class DBAgent {
 	 */
 	public int getAIWins() {
 		
-		int nTotal = -1;
+		int nTotal = 0;
 		java.sql.ResultSet rResultSet;
 		String sQuery = "SELECT COUNT(*) AS NUMBER_OF_AI_WINS "
 				+ "FROM \"GameStatus\" "
@@ -252,7 +252,7 @@ public class DBAgent {
 	 */
 	public int getHumanWins() {
 		
-		int nTotal = -1;
+		int nTotal = 0;
 		java.sql.ResultSet rResultSet;
 		String sQuery = "SELECT COUNT(*) AS NUMBER_OF_HUMAN_WINS "
 				+ "FROM public.\"GameStatus\" "
@@ -283,7 +283,7 @@ public class DBAgent {
 	 */
 	public int getAvgDraws() {
 		
-		double rTotal = -1.0;
+		double rTotal = 0;
 		java.sql.ResultSet rResultSet;
 		String sQuery = "SELECT AVG(\"DrawTimes\") AS AVERAGE_DRAWS "
 				+ "FROM public.\"GameStatus\" ";
@@ -313,7 +313,7 @@ public class DBAgent {
 	 */
 	public int getLargestRoundsPlayed() {
 		
-		int nTotal = -1; 
+		int nTotal = 0; 
 		java.sql.ResultSet rResultSet; 
 		String sQuery = "SELECT MAX(\"RoundsPlayed\") AS MOST_ROUNDS_PLAYED "
 				+ "FROM public.\"GameStatus\" ";
@@ -344,7 +344,7 @@ public class DBAgent {
 
 	public int getMaxGameID() {
 		
-		int nTotal = -1; 
+		int nTotal = 0; 
 		String sQuery = "SELECT MAX(\"GameID\") AS MAX_GAME_ID "
 				+ "FROM public.\"GameStatus\" ";
 		
